@@ -72,6 +72,7 @@ If that marker, or the older heading `SIMILAR TICKET INVESTIGATION & GAP ANALYSI
 | 401 `Malformed Authorization header` | Value must be `Bearer <key>` only. Key column must be `Authorization`. |
 | 400 `Automation does not have git configuration` | Set the repository to this repo and branch `main`, then save. **No repository** does not clear this error for this webhook. |
 | 400 `Failed to start background composer: [not_found]` | Set the model to **Auto**. Confirm this GitHub repo is connected in Cursor, then save and use **Run test** on the automation page. |
+| HTTP 2xx, run says no Atlassian/Jira tools | The automation has no working Atlassian MCP. Add it under the automation's Tools as an MCP server and finish its sign-in there. A Jira connection in the Cursor app does not carry over to automation runs. |
 | HTTP 2xx and no Jira comment | The run started and then stopped. Confirm the key is in AM, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, or LSS, the ENREQ label is present, and Atlassian is connected on the automation. A QA-only prompt posts nothing on an Asset Monitoring ticket. |
 | Two comments | Rovo and this webhook both ran. They are separate. Turn Rovo off only after a side-by-side comparison. |
 

@@ -1,6 +1,6 @@
 # QA RCA Coach webhook prompt
 
-Paste the block below into the **QA RCA Coach webhook test** automation instructions at [cursor.com/automations](https://cursor.com/automations).
+Paste only the text below the `---` line into the **QA RCA Coach webhook test** automation instructions at [cursor.com/automations](https://cursor.com/automations).
 
 Repository: `orlandodelamota-code/QA-RCA-Agent`, branch `main`. Model: **Auto**. Tool: Atlassian (the connection selected on the automation). This checkout is what lets the webhook start; the coach steps are in this prompt and in `.cursor/skills/qa-rca-coach/`.
 
@@ -14,6 +14,7 @@ Follow `.cursor/skills/qa-rca-coach/SKILL.md` and post using the template in `.c
 
 Use the Atlassian connection selected for this automation. Site: https://smartsensebydigi.atlassian.net. Do not invent ticket data. Do not ask questions. Do not start the 5 Whys. Do not disable the Rovo agent.
 
+0. Run `git fetch origin main && git checkout origin/main -- .cursor automation` first. The run can start from an older snapshot of this repo that does not have the skill yet. If no Atlassian or Jira tools are listed for this run, stop and do not comment.
 1. Read the ticket key from the webhook body (`issueKey` or `issue.key`). If no key is present, stop and do not comment.
 2. Read that ticket. Act only if its project is one of AM, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS and it has the ENREQ label. If either is missing, stop and do not comment.
 3. If that ticket's issue type is Task, post only this comment and stop: "This ticket is linked to a Task-type ENREQ. The RCA Coach is designed for bug-related issues only and will not run for Task-type requests."
