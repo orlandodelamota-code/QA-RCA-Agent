@@ -24,9 +24,9 @@ If unsure, treat the session as Interactive.
 
 1. **Resolve the ENREQ.**
    - Interactive: the key the user gives is the ENREQ.
-   - Automated: the key is a product-board ticket. Read it, then find the **linked ENREQ ticket** and read that. If no linked ENREQ can be found or read, say so and stop. Never fall back to the product-board ticket's own attributes.
+   - Automated: the key is a product-board ticket. Read it, then find the **linked ENREQ ticket** and read that. If no linked ENREQ can be found or read, write the coach comment with only this text under the marker and stop: "No linked ENREQ could be read on KEY. Issue links, web links, and related work items were checked, and none point to an ENREQ ticket. The similar-ticket investigation did not run. Link the ENREQ and add the ENREQ label again to rerun." Never fall back to the product-board ticket's own attributes.
 2. **Issue type check.** The Bug vs Task filter is on the **product-board ticket** that carries the ENREQ label, per [QA-2441](https://smartsensebydigi.atlassian.net/browse/QA-2441). ENREQ tickets themselves are issue type "Submit a request or incident". That type is not Bug and not Task. Never stop just because the ENREQ's own issue type is not Bug.
-   - Automated, or the user pasted a product-board key: if that ticket's issue type is **Task**, stop immediately. Do not search, capture context, or start the 5 Whys. Post this as a brief comment on the triggering ticket: "This ticket is linked to a Task-type ENREQ. The RCA Coach is designed for bug-related issues only and will not run for Task-type requests."
+   - Automated, or the user pasted a product-board key: if that ticket's issue type is **Task**, stop immediately. Do not search, capture context, or start the 5 Whys. Write the coach comment on the triggering ticket with only this text under the marker: "This ticket is linked to a Task-type ENREQ. The RCA Coach is designed for bug-related issues only and will not run for Task-type requests."
    - Interactive, and the user gave an ENREQ key: read linked product-board tickets. If every linked one is a Task, stop and say exactly: "This ENREQ is a Task-type ticket. The RCA Coach is designed for bug-related issues only and does not support root cause analysis for Task-type requests. Please confirm you have the correct ticket or contact your QA lead if you believe this is an error." If at least one linked ticket is a Bug, proceed. If none are linked, proceed when the ENREQ describes a defect, and ask the user to confirm before searching when it reads as a request (content update, configuration, "please add").
    - Only bug-related ENREQs proceed.
 3. **Platform check.** Decide whether the ENREQ is mobile (iOS, Android, mobile app, mobile UI) or web (web UI, browser, dashboard, web app). If it cannot be determined, mark Platform as Unconfirmed in the Search Criteria block. In Interactive mode ask the user to confirm before searching.
@@ -158,18 +158,21 @@ Use the exact template in [references/output-format.md](references/output-format
 
 1. Run the gate checks.
 2. Run the investigation (top 3 per group).
-3. Post the structured output as a comment on the triggering product-board ticket, ending with the Continue in RCA Coach block.
+3. Write the structured output as the coach comment on the triggering product-board ticket, ending with the Continue in RCA Coach block. Add it, or edit the existing marked comment (see One comment per ticket).
 4. Stop. No questions, no 5 Whys, no waiting.
 
 Posting a comment is a write action. Before first use in production, confirm with the skill owner that the automation is allowed to post, that it is restricted to the intended boards, and that it ignores comments it wrote itself.
 
-### Loop prevention
+### One comment per ticket
 
-- Marker, first line of every automated comment: `QA RCA Coach — automated similar-ticket investigation`
-- Before posting, read existing comments. If that marker is already on the ticket, do not post again.
-- Also skip the post when a comment already contains `SIMILAR TICKET INVESTIGATION & GAP ANALYSIS` (the Rovo agent used that heading, sometimes without this marker). A manual re-run still produces the condensed delta in the session. It does not post another Jira comment unless the user asks.
-- The Jira automation that invokes this skill must trigger on the ENREQ label being added, not on a comment being added.
-- Do not reply to, edit, or re-investigate a comment that already carries the marker.
+- Marker, first line of every automated comment, including the Task notice and the no-linked-ENREQ notice: `QA RCA Coach — automated similar-ticket investigation`
+- Before writing, list the ticket's comments (`executeRead` with `listJiraIssueComments`) and find the one whose first line is the marker.
+  - None: add a new comment with `addOrEditJiraIssueComment`.
+  - One exists and the new text differs (for example an ENREQ is now linked, or the investigation results changed): edit that comment in place with `addOrEditJiraIssueComment` and its comment id. Do not add a second comment.
+  - One exists and the text would be the same: change nothing.
+- Never edit or reply to a comment that lacks the marker. That includes the older Rovo comments that contain `SIMILAR TICKET INVESTIGATION & GAP ANALYSIS`. If such a Rovo comment exists and no coach comment exists, do not post; a person compares the two outputs during cutover.
+- The Jira automation that invokes this skill must trigger on the ENREQ label being added, not on a comment being added or edited.
+- A manual re-run in an interactive session produces the condensed delta in the session. It does not touch the Jira comment unless the user asks.
 
 ### Continue link
 
@@ -190,7 +193,7 @@ Needed capabilities, all through that integration:
 - Read comments: `executeRead` with `name: "listJiraIssueComments"` (`cloudId` is a top-level argument, not inside `inputs`). `getJiraIssue` does not return comment bodies.
 - Read linked commits/PRs from the issue's development or remote links
 - Read Confluence pages: `searchConfluence`, `getConfluenceContent`
-- Post a Jira comment (Automated mode only, after the production-posting confirmation): `addOrEditJiraIssueComment`
+- Add or edit the coach comment (Automated mode only, after the production-posting confirmation): `addOrEditJiraIssueComment`, passing the existing comment id when editing
 
 ## Cutover
 

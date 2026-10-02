@@ -55,7 +55,7 @@ Overall Recurrence Risk: [High / Medium / Low], [brief rationale]
 
 ## Automated mode only: append this block
 
-The first line of the Jira comment is the loop-prevention marker: `QA RCA Coach — automated similar-ticket investigation`
+The first line of the Jira comment is the marker: `QA RCA Coach — automated similar-ticket investigation`. The Task notice and the no-linked-ENREQ notice also start with it. There is one marked comment per ticket; later runs edit it rather than adding another.
 
 Then the template above, then:
 
