@@ -60,9 +60,9 @@ Automated comments start with:
 
 `QA RCA Coach — automated similar-ticket investigation`
 
-They then use the similar-ticket template and end with a Continue link into the interactive 5 Whys. The run does not ask questions and does not start the 5 Whys.
+They then use the similar-ticket template and end with a Continue link into the interactive 5 Whys. The run does not ask questions and does not start the 5 Whys. The Task notice and the no-linked-ENREQ notice start with the same marker.
 
-If that marker, or the older heading `SIMILAR TICKET INVESTIGATION & GAP ANALYSIS`, is already on the ticket, the run does not post again. If Rovo and this webhook finish at the same time, both comments can still land.
+There is one coach comment per ticket. When the label fires again, the run finds the marked comment and edits it if anything changed (for example an ENREQ was linked after the first run), and leaves it alone if nothing changed. It never adds a second marked comment. It does not touch comments without the marker; if only an older Rovo comment with `SIMILAR TICKET INVESTIGATION & GAP ANALYSIS` is present, the run does not post. If Rovo and this webhook finish at the same time, both comments can still land.
 
 ## Troubleshooting
 
@@ -75,6 +75,7 @@ If that marker, or the older heading `SIMILAR TICKET INVESTIGATION & GAP ANALYSI
 | HTTP 2xx, run says no Atlassian/Jira tools | The automation has no working Atlassian MCP. Add it under the automation's Tools as an MCP server and finish its sign-in there. A Jira connection in the Cursor app does not carry over to automation runs. |
 | HTTP 2xx and no Jira comment | The run started and then stopped. Confirm the key is in AM, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, or LSS, the ENREQ label is present, and Atlassian is connected on the automation. A QA-only prompt posts nothing on an Asset Monitoring ticket. |
 | Two comments | Rovo and this webhook both ran. They are separate. Turn Rovo off only after a side-by-side comparison. |
+| Comment says no linked ENREQ | The product-board ticket has no issue link to an ENREQ. Link the ENREQ, then remove and re-add the ENREQ label. The run edits that same comment with the investigation. |
 
 ## Cutover
 
