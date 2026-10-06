@@ -12,7 +12,7 @@ Source ticket: [QA-3114](https://smartsensebydigi.atlassian.net/browse/QA-3114).
 2. The rule **Send web request** POSTs the ticket key to the Cursor automation webhook.
 3. The automation checks out this repo on `main`, follows the webhook prompt, and posts one comment on that product-board ticket through the Atlassian connection selected on the automation.
 
-A comment is posted only when the ticket's project key is on [Quality Coaches and their teams](https://smartsensebydigi.atlassian.net/wiki/spaces/EN/pages/6228082716/Quality+Coaches+and+their+teams). The current keys are AM, DASRV, LSS, LW, SSV, and TOOLS. A Quality Assurance (QA) key is ignored. Bug versus Task is decided on the product-board ticket. A Task gets only the short “bug-related issues only” note, plus the coach mention.
+Any ticket that carries the ENREQ label gets a comment, in any Jira project. Bug versus Task is decided on that ticket. A Task gets only the short “bug-related issues only” note.
 
 ## Cursor automation
 
@@ -60,7 +60,7 @@ Automated comments start with:
 
 `QA RCA Coach — automated similar-ticket investigation`
 
-The next line mentions the quality coaches for that ticket's project key, from [Quality Coaches and their teams](https://smartsensebydigi.atlassian.net/wiki/spaces/EN/pages/6228082716/Quality+Coaches+and+their+teams). The mention is a real Jira notification, using the account ID on that page. A project key that is not on the page gets no comment. Labels (LSS) mentions both coaches listed on its row.
+When that project key is on [Quality Coaches and their teams](https://smartsensebydigi.atlassian.net/wiki/spaces/EN/pages/6228082716/Quality+Coaches+and+their+teams), the next line mentions those coaches. The mention is a real Jira notification, using the account ID on that page. Labels (LSS) mentions both coaches listed on its row. A project with no coach still gets the comment, and nobody is pinged.
 
 They then use the similar-ticket template and end with a Continue link into the interactive 5 Whys. That link's prompt tells the agent to read the public skill files in this repo before coaching, so the guide is available on an account that does not have the skill installed. The run does not ask questions and does not start the 5 Whys. The Task notice and the no-linked-ENREQ notice start with the same marker and the same coach mentions.
 
@@ -75,7 +75,7 @@ There is one coach comment per ticket. When the label fires again, the run finds
 | 400 `Automation does not have git configuration` | Set the repository to this repo and branch `main`, then save. **No repository** does not clear this error for this webhook. |
 | 400 `Failed to start background composer: [not_found]` | Set the model to **Auto**. Confirm this GitHub repo is connected in Cursor, then save and use **Run test** on the automation page. |
 | HTTP 2xx, run says no Atlassian/Jira tools | The automation has no working Atlassian MCP. Add it under the automation's Tools as an MCP server and finish its sign-in there. A Jira connection in the Cursor app does not carry over to automation runs. |
-| HTTP 2xx and no Jira comment | The run started and then stopped. Confirm the ENREQ label is present, the project key is on the Quality Coaches page, and Atlassian is connected on the automation. A project key that is not on that page gets no comment. |
+| HTTP 2xx and no Jira comment | The run started and then stopped. Confirm the ENREQ label is present and Atlassian is connected on the automation. A project with no coach still gets a comment; it just has no mention. |
 | Two comments | Rovo and this webhook both ran. They are separate. Turn Rovo off only after a side-by-side comparison. |
 | Comment says no linked ENREQ | The product-board ticket has no issue link to an ENREQ. Link the ENREQ, then remove and re-add the ENREQ label. The run edits that same comment with the investigation. |
 
