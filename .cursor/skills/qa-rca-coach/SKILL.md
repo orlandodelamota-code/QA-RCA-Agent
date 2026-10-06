@@ -144,7 +144,7 @@ Test coverage gaps; fix quality overview; overall recurrence risk:
 Recommendations: new test cases to write (with suggested scope), existing test cases to strengthen, process improvements. Flag the top 1-2 as priorities.
 
 ### Output format
-Use the exact template in [references/output-format.md](references/output-format.md). It is the **only** permitted output for the investigation. No prose summaries, no "Context Summary" block, no narrative before or after. If a section has no findings, keep the header and write "None found". Self-check the output against the template before responding.
+Use the exact template in [references/output-format.md](references/output-format.md), including its writing rules. Automated mode may add only the marker, the coach mentions, and a two-sentence problem statement before the template. No other prose, no "Context Summary" block, and no 5 Whys. If a section has no findings, keep the header and write "None found". Self-check the output against the template before responding.
 
 ### Investigation guardrails
 - Only surface data actually retrieved from Jira. Never fabricate ticket data.
