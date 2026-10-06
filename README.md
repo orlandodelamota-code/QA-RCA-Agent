@@ -60,7 +60,7 @@ Automated comments start with:
 
 `QA RCA Coach — automated similar-ticket investigation`
 
-They then use the similar-ticket template and end with a Continue link into the interactive 5 Whys. The run does not ask questions and does not start the 5 Whys. The Task notice and the no-linked-ENREQ notice start with the same marker.
+They then use the similar-ticket template and end with a Continue link into the interactive 5 Whys. That link's prompt tells the agent to read the public skill files in this repo before coaching, so the guide is available on an account that does not have the skill installed. The run does not ask questions and does not start the 5 Whys. The Task notice and the no-linked-ENREQ notice start with the same marker.
 
 There is one coach comment per ticket. When the label fires again, the run finds the marked comment and edits it if anything changed (for example an ENREQ was linked after the first run), and leaves it alone if nothing changed. It never adds a second marked comment. It does not touch comments without the marker; if only an older Rovo comment with `SIMILAR TICKET INVESTIGATION & GAP ANALYSIS` is present, the run does not post. If Rovo and this webhook finish at the same time, both comments can still land.
 

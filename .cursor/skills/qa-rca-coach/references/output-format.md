@@ -63,9 +63,9 @@ Then the template above, then:
 
 The full RCA session, including the 5 Whys, root cause identification, and CAPA, is completed in the RCA Coach.
 
-👉 [Continue RCA for ENREQ-XXXX](https://cursor.com/link/prompt?text=Use%20the%20QA%20RCA%20Coach%20skill%20in%20interactive%20mode%20on%20ENREQ-XXXX.%20The%20Similar%20Ticket%20Investigation%20already%20ran.%20Do%20not%20re-run%20it.%20Proceed%20directly%20into%20the%205%20Whys%20using%20the%20investigation%20comment.)
+👉 [Continue RCA for ENREQ-XXXX](https://cursor.com/link/prompt?text=Read%20https%3A%2F%2Fgithub.com%2Forlandodelamota-code%2FQA-RCA-Agent%2Fblob%2Fmain%2F.cursor%2Fskills%2Fqa-rca-coach%2FSKILL.md%20and%20https%3A%2F%2Fgithub.com%2Forlandodelamota-code%2FQA-RCA-Agent%2Fblob%2Fmain%2F.cursor%2Fskills%2Fqa-rca-coach%2Freferences%2Foutput-format.md%20from%20the%20public%20repo%20first%2C%20then%20use%20the%20QA%20RCA%20Coach%20skill%20in%20interactive%20mode%20on%20ENREQ-XXXX.%20The%20Similar%20Ticket%20Investigation%20already%20ran.%20Do%20not%20re-run%20it.%20Proceed%20directly%20into%20the%205%20Whys%20using%20the%20investigation%20comment.)
 
-Replace both `ENREQ-XXXX` occurrences (visible label and encoded prompt) with the source ENREQ key. Open the link to start the coach with this ticket pre-loaded. The investigation will not re-run; proceed directly into the 5 Whys using the findings above.
+Replace both `ENREQ-XXXX` occurrences (visible label and encoded prompt) with the source ENREQ key. Open the link to start the coach with this ticket pre-loaded. The prompt reads the public skill files first, then goes into the 5 Whys. The investigation will not re-run.
 
 ## Condensed delta format (manual re-run mid-session)
 
