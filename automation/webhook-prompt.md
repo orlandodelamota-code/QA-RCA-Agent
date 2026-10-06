@@ -4,7 +4,7 @@ Paste only the text below the `---` line into the **QA RCA Coach webhook test** 
 
 Repository: `orlandodelamota-code/QA-RCA-Agent`, branch `main`. Model: **Auto**. Tool: Atlassian (the connection selected on the automation). This checkout is what lets the webhook start; the coach steps are in this prompt and in `.cursor/skills/qa-rca-coach/`.
 
-Scope is any ticket that carries the ENREQ label, in any Jira project. A quality-coach mention is added only when that project key is on the Quality Coaches page. The Asset Monitoring RCA Workflow is the caller today; the same web request is needed in each project that should start a run.
+Scope is a product-board ticket that carries the ENREQ label. The projects are AM, DASRV, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, and LSS. Each of those projects has its own Jira rule. This webhook does not watch every space. A quality-coach mention is added only when that project key is on the Quality Coaches page.
 
 ---
 
@@ -16,7 +16,7 @@ Use the Atlassian connection selected for this automation. Site: https://smartse
 
 0. Run `git fetch origin main && git checkout origin/main -- .cursor automation` first. The run can start from an older snapshot of this repo that does not have the skill yet. If no Atlassian or Jira tools are listed for this run, stop and do not comment.
 1. Read the ticket key from the webhook body (`issueKey` or `issue.key`). If no key is present, stop and do not comment.
-2. Read that ticket. Act only if it has the ENREQ label. If the label is missing, stop and do not comment.
+2. Read that ticket. Act only if its project is one of AM, DASRV, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS and it has the ENREQ label. If either is missing, stop and do not comment.
 3. Read https://smartsensebydigi.atlassian.net/wiki/spaces/EN/pages/6228082716/Quality+Coaches+and+their+teams with `getConfluenceContent`, `content_format: "html"`. Match the ticket's project key to the Project Key column, ignoring case. If a row matches, copy every coach mention's `data-user-id` and display name. A row can have more than one coach. Do not invent an account ID. If no row matches, or the row has no mention with a `data-user-id`, still write the comment and omit the ping. A missing coach never blocks the comment.
 4. One coach comment per ticket. The comment is HTML (`contentFormat: "html"`). The first paragraph's text is exactly: QA RCA Coach — automated similar-ticket investigation. Before writing, list the ticket's comments and find the one whose first text is that marker. If it exists, edit it with `addOrEditJiraIssueComment` and its comment id. If its text and the same coach account IDs are already there, change nothing and stop. Never add a second comment that carries the marker. Do not edit or reply to comments that lack the marker, including older Rovo comments that contain "SIMILAR TICKET INVESTIGATION & GAP ANALYSIS"; if such a Rovo comment exists and no coach comment exists, stop and do not comment.
 5. If that ticket's issue type is Task, write only the marker, the coach mentions, and this text, then stop: "This ticket is linked to a Task-type ENREQ. The RCA Coach is designed for bug-related issues only and will not run for Task-type requests."
