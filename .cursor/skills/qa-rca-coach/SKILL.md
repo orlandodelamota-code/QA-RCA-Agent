@@ -1,7 +1,7 @@
 ---
 name: qa-rca-coach
-description: Coaches a QA team member through an ENREQ Mini Root Cause Analysis using the 5 Whys, and runs the Similar Ticket Investigation and Gap Analysis for bug-type ENREQs. Use whenever the user mentions an ENREQ key (ENREQ-1234), an RCA, Mini-RCA, 5 Whys, root cause, "similar tickets", "related incidents", "check history", CAPA, or when an automation sends a product-board ticket (AM, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS) that just received the ENREQ label. Also use when the request arrives as a webhook payload containing a ticket key.
-last_updated: 2026-10-01
+description: Coaches a QA team member through an ENREQ Mini Root Cause Analysis using the 5 Whys, and runs the Similar Ticket Investigation and Gap Analysis for bug-type ENREQs. Use whenever the user mentions an ENREQ key (ENREQ-1234), an RCA, Mini-RCA, 5 Whys, root cause, "similar tickets", "related incidents", "check history", CAPA, or when an automation sends a product-board ticket whose project key is on the Quality Coaches page (AM, DASRV, LSS, LW, SSV, TOOLS) and that ticket just received the ENREQ label. Also use when the request arrives as a webhook payload containing a ticket key.
+last_updated: 2026-10-06
 created_by: odelamot@digi.com
 ---
 
@@ -13,7 +13,7 @@ Draft migrated from the Rovo agent "QA RCA Coach" (V4) and its sub-agent "ENREQ 
 
 | Mode | When | Behavior |
 |------|------|----------|
-| **Automated** | Invoked by webhook/automation with a ticket key and no human in the session | Run the Similar Ticket Investigation only, post the structured output as a Jira comment on the triggering ticket, append the Continue block. Do NOT ask questions. Do NOT start the 5 Whys. |
+| **Automated** | Invoked by webhook/automation with a ticket key and no human in the session | Run the Similar Ticket Investigation only, post the structured output as an HTML Jira comment on the triggering ticket, mention the quality coaches for that project, and append the Continue block. Do NOT ask questions. Do NOT start the 5 Whys. |
 | **Interactive** | A person opens a session (with or without an ENREQ key) | Run the full coaching flow below. |
 | **Manual re-run** | User says "search for similar tickets", "related incidents", "check history", "any past issues like this" mid-session | Re-run the investigation and produce a condensed delta update instead of the full output. |
 | **Continue** | The user opens from the Continue link, or says the investigation already ran and to go to the 5 Whys | Do not re-run the investigation. Read the ENREQ and the investigation comment, then start the 5 Whys. |
@@ -24,9 +24,9 @@ If unsure, treat the session as Interactive.
 
 1. **Resolve the ENREQ.**
    - Interactive: the key the user gives is the ENREQ.
-   - Automated: the key is a product-board ticket. Read it, then find the **linked ENREQ ticket** and read that. If no linked ENREQ can be found or read, write the coach comment with only this text under the marker and stop: "No linked ENREQ could be read on KEY. Issue links, web links, and related work items were checked, and none point to an ENREQ ticket. The similar-ticket investigation did not run. Link the ENREQ and add the ENREQ label again to rerun." Never fall back to the product-board ticket's own attributes.
+   - Automated: the key is a product-board ticket. Read it. Its project key must match a Project Key on [Quality Coaches and their teams](https://smartsensebydigi.atlassian.net/wiki/spaces/EN/pages/6228082716/Quality+Coaches+and+their+teams). If it does not, stop and do not comment. Then find the **linked ENREQ ticket** and read that. If no linked ENREQ can be found or read, write the coach comment with the marker, the coach mentions, and only this text, then stop: "No linked ENREQ could be read on KEY. Issue links, web links, and related work items were checked, and none point to an ENREQ ticket. The similar-ticket investigation did not run. Link the ENREQ and add the ENREQ label again to rerun." Never fall back to the product-board ticket's own attributes.
 2. **Issue type check.** The Bug vs Task filter is on the **product-board ticket** that carries the ENREQ label, per [QA-2441](https://smartsensebydigi.atlassian.net/browse/QA-2441). ENREQ tickets themselves are issue type "Submit a request or incident". That type is not Bug and not Task. Never stop just because the ENREQ's own issue type is not Bug.
-   - Automated, or the user pasted a product-board key: if that ticket's issue type is **Task**, stop immediately. Do not search, capture context, or start the 5 Whys. Write the coach comment on the triggering ticket with only this text under the marker: "This ticket is linked to a Task-type ENREQ. The RCA Coach is designed for bug-related issues only and will not run for Task-type requests."
+   - Automated, or the user pasted a product-board key: if that ticket's issue type is **Task**, stop immediately. Do not search, capture context, or start the 5 Whys. Write the coach comment on the triggering ticket with the marker, the coach mentions, and only this text: "This ticket is linked to a Task-type ENREQ. The RCA Coach is designed for bug-related issues only and will not run for Task-type requests."
    - Interactive, and the user gave an ENREQ key: read linked product-board tickets. If every linked one is a Task, stop and say exactly: "This ENREQ is a Task-type ticket. The RCA Coach is designed for bug-related issues only and does not support root cause analysis for Task-type requests. Please confirm you have the correct ticket or contact your QA lead if you believe this is an error." If at least one linked ticket is a Bug, proceed. If none are linked, proceed when the ENREQ describes a defect, and ask the user to confirm before searching when it reads as a request (content update, configuration, "please add").
    - Only bug-related ENREQs proceed.
 3. **Platform check.** Decide whether the ENREQ is mobile (iOS, Android, mobile app, mobile UI) or web (web UI, browser, dashboard, web app). If it cannot be determined, mark Platform as Unconfirmed in the Search Criteria block. In Interactive mode ask the user to confirm before searching.
@@ -92,7 +92,7 @@ Extract from the **linked ENREQ ticket only**: bug description, affected feature
 ### Exclusions (remove silently, do not count in totals)
 - The ENREQ being investigated.
 - The triggering product-board ticket, when automated mode started from one.
-- Any product-board ticket (AM, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS) that is a **clone** of the current ENREQ, and any clone of it in any Jira space. Use the clone relationship specifically.
+- Any product-board ticket (AM, DASRV, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS) that is a **clone** of the current ENREQ, and any clone of it in any Jira space. Use the clone relationship specifically.
 - Do NOT exclude merely *linked* tickets; they are valid context.
 
 LSS is in the product-board list because [QA-2757](https://smartsensebydigi.atlassian.net/browse/QA-2757) found LSS bugs created from ENREQs were skipped when the escalated-clone rule omitted that project.
@@ -101,7 +101,7 @@ LSS is in the product-board list because [QA-2757](https://smartsensebydigi.atla
 Mobile and web are separate. Only return tickets matching the source ENREQ's platform. If a candidate's platform is unclear, include it marked **❓ Platform Unconfirmed** and say so in Key Context.
 
 ### Search and limits
-- Search ENREQ tickets (open and closed) and also AM, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS. Prioritize the ENREQ space.
+- Search ENREQ tickets (open and closed) and also AM, DASRV, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS. Prioritize the ENREQ space.
 - Group by Open vs Closed, sorted by relevance.
 - Automated mode: top **3** per group. Interactive or manual: top **5** per group.
 - Add a note on overflow: "X additional tickets found — ask to see more if needed" (interactive) or "X additional tickets found — run manually in Jira for full results" (automated).
@@ -114,7 +114,7 @@ Build the search with JQL text search. Replace the old Rovo "Find similar work i
 4. Search with `searchJiraIssuesUsingJql`. Start from the ENREQ project, then the product boards. Example shape (substitute real keywords; do not search with this placeholder):
 
 ```
-project in (ENREQ, AM, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS)
+project in (ENREQ, AM, DASRV, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS)
 AND text ~ "\"feature phrase\" OR \"error phrase\""
 AND key != ENREQ-XXXX
 ORDER BY updated DESC
@@ -158,8 +158,14 @@ Use the exact template in [references/output-format.md](references/output-format
 
 1. Run the gate checks.
 2. Run the investigation (top 3 per group).
-3. Write the structured output as the coach comment on the triggering product-board ticket, ending with the Continue in RCA Coach block. Add it, or edit the existing marked comment (see One comment per ticket).
+3. Write the structured output as an HTML coach comment on the triggering product-board ticket, with the quality-coach mentions for that project, ending with the Continue in RCA Coach block. Add it, or edit the existing marked comment (see One comment per ticket).
 4. Stop. No questions, no 5 Whys, no waiting.
+
+### Quality coach mention
+
+Read [Quality Coaches and their teams](https://smartsensebydigi.atlassian.net/wiki/spaces/EN/pages/6228082716/Quality+Coaches+and+their+teams) with `getConfluenceContent` and `content_format: "html"`. Match the triggering ticket's project key to the Project Key column, ignoring case. Copy every `data-user-id` and display name from the mention spans in that row. A row can list more than one coach. Do not invent an account ID. If the row has no mention with a `data-user-id`, post the comment without a ping.
+
+Post with `addOrEditJiraIssueComment` and `contentFormat: "html"`. The first paragraph's text is only the marker. The next paragraph is one `<span data-type="mention" data-user-id="ACCOUNT_ID">@Display Name</span>` per coach, separated by a space. Then the investigation template as HTML. This mention is included on the Task notice and the no-linked-ENREQ notice as well.
 
 Posting a comment is a write action. Before first use in production, confirm with the skill owner that the automation is allowed to post, that it is restricted to the intended boards, and that it ignores comments it wrote itself.
 
@@ -189,7 +195,7 @@ Jira and Confluence access uses the Cursor Atlassian integration already connect
 Needed capabilities, all through that integration:
 
 - Read issues and links (including clone links and issue type): `getJiraIssue` with `view: "evidence"`
-- JQL search across ENREQ, AM, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS: `searchJiraIssuesUsingJql`
+- JQL search across ENREQ, AM, DASRV, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS: `searchJiraIssuesUsingJql`
 - Read comments: `executeRead` with `name: "listJiraIssueComments"` (`cloudId` is a top-level argument, not inside `inputs`). `getJiraIssue` does not return comment bodies.
 - Read linked commits/PRs from the issue's development or remote links
 - Read Confluence pages: `searchConfluence`, `getConfluenceContent`

@@ -55,9 +55,13 @@ Overall Recurrence Risk: [High / Medium / Low], [brief rationale]
 
 ## Automated mode only: append this block
 
-The first line of the Jira comment is the marker: `QA RCA Coach — automated similar-ticket investigation`. The Task notice and the no-linked-ENREQ notice also start with it. There is one marked comment per ticket; later runs edit it rather than adding another.
+Post the comment with `contentFormat: "html"`. The first paragraph's text is the marker: `QA RCA Coach — automated similar-ticket investigation`. The Task notice and the no-linked-ENREQ notice also start with it. There is one marked comment per ticket; later runs edit it rather than adding another.
 
-Then the template above, then:
+The next paragraph mentions every quality coach for the ticket's project key, from [Quality Coaches and their teams](https://smartsensebydigi.atlassian.net/wiki/spaces/EN/pages/6228082716/Quality+Coaches+and+their+teams). Use the account ID copied from that page:
+
+`<span data-type="mention" data-user-id="ACCOUNT_ID">@Display Name</span>`
+
+Then the template above, as HTML, then:
 
 🔗 CONTINUE IN RCA COACH
 
