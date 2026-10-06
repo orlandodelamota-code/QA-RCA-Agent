@@ -178,9 +178,9 @@ Posting a comment is a write action. Before first use in production, confirm wit
 
 Build the link with the real ENREQ key. URL-encode the prompt. Web form (works from a Jira comment):
 
-`https://cursor.com/link/prompt?text=Use%20the%20QA%20RCA%20Coach%20skill%20in%20interactive%20mode%20on%20ENREQ-XXXX.%20The%20Similar%20Ticket%20Investigation%20already%20ran.%20Do%20not%20re-run%20it.%20Proceed%20directly%20into%20the%205%20Whys%20using%20the%20investigation%20comment.`
+`https://cursor.com/link/prompt?text=Read%20https%3A%2F%2Fgithub.com%2Forlandodelamota-code%2FQA-RCA-Agent%2Fblob%2Fmain%2F.cursor%2Fskills%2Fqa-rca-coach%2FSKILL.md%20and%20https%3A%2F%2Fgithub.com%2Forlandodelamota-code%2FQA-RCA-Agent%2Fblob%2Fmain%2F.cursor%2Fskills%2Fqa-rca-coach%2Freferences%2Foutput-format.md%20from%20the%20public%20repo%20first%2C%20then%20use%20the%20QA%20RCA%20Coach%20skill%20in%20interactive%20mode%20on%20ENREQ-XXXX.%20The%20Similar%20Ticket%20Investigation%20already%20ran.%20Do%20not%20re-run%20it.%20Proceed%20directly%20into%20the%205%20Whys%20using%20the%20investigation%20comment.`
 
-Replace `ENREQ-XXXX` in the encoded text with the source key (encode the hyphen as-is; it is safe). The click opens Cursor with that prompt filled in. The user still confirms before it runs. That click is Continue mode.
+Replace `ENREQ-XXXX` in the encoded text with the source key (encode the hyphen as-is; it is safe). The click opens Cursor with that prompt filled in. The prompt tells the agent to read the public skill files first, so the guide is available even when the skill is not installed on that account. The user still confirms before it runs. That click is Continue mode. They still need their own Atlassian connection to read the ENREQ.
 
 ## Tool and credential notes
 
