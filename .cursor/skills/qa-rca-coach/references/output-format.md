@@ -2,6 +2,16 @@
 
 Use this template exactly. Replace bracketed items. Keep every section header; write "None found" for empty sections. Do not add prose before or after.
 
+Write it so a coach can scan it. Match the short layout used on [AM-4358](https://smartsensebydigi.atlassian.net/browse/AM-4358):
+
+- Put a two-sentence problem statement immediately after the marker, before the template. State what fails, where, and what is already known. Do not start the 5 Whys.
+- Each search-criteria field is its own bullet, with the label in bold. Do not put several fields in one paragraph.
+- The ticket line is the linked key, then the summary in bold. Do not retell the ticket in that line.
+- Status, Linked Dev Ticket, Resolution, Fix Quality, and Recurrence Risk are each one bullet. Key Context and Fix Description are at most two short sentences.
+- The count in a section header is the number of tickets listed there. If more were found, the next line is the overflow note.
+- Priority 1 and Priority 2 are separate lines. Each recommendation is one sentence.
+- In HTML, a new field is a new `<li>` or `<p>`. Never put a newline character inside one paragraph. Bold each section title and each field label.
+
 ---
 
 📋 SIMILAR TICKET INVESTIGATION & GAP ANALYSIS
