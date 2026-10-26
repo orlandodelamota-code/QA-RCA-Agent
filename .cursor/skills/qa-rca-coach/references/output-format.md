@@ -4,6 +4,8 @@ Use this template exactly. Replace bracketed items. Keep every section header; w
 
 Keep the comment short enough for a first-glance Jira read. Prefer one short line per field. Do not paste long comment quotes, PR changelogs, or query-narrowing narratives into Search Criteria or ticket notes.
 
+**Hard reject before posting:** if the draft still has any of `Feature Area:`, `Error Type:` (separate line), `Excluded from results:`, `Key Context:`, `Linked Dev Ticket:`, `Fix Description:`, per-ticket `Test Coverage Gaps:` bullets, per-ticket `Recurrence Risk:`, more than **2** tickets under Open or under Closed, or a "Query narrowed" / "Dropped as" paragraph — rewrite to this template. Do not post the long draft.
+
 ---
 
 📋 SIMILAR TICKET INVESTIGATION & GAP ANALYSIS
