@@ -2,6 +2,8 @@
 
 Use this template exactly. Replace bracketed items. Keep every section header; write "None found" for empty sections. Do not add prose before or after.
 
+Keep the comment short enough for a first-glance Jira read. Prefer one short line per field. Do not paste long comment quotes, PR changelogs, or query-narrowing narratives into Search Criteria or ticket notes.
+
 ---
 
 📋 SIMILAR TICKET INVESTIGATION & GAP ANALYSIS
@@ -9,47 +11,38 @@ Use this template exactly. Replace bracketed items. Keep every section header; w
 🔍 SEARCH CRITERIA
 
 Source ENREQ: [ENREQ-XXXX](https://smartsensebydigi.atlassian.net/browse/ENREQ-XXXX)
-Keywords: [extracted from ENREQ ticket]
-Feature Area: [identified area]
-Error Type: [identified type]
-Platform: [Mobile / Web / Unconfirmed]
-Excluded from results: [ENREQ-XXXX] and cloned tickets ([AM-XXXX], etc.)
+Platform: [Mobile / Web / Unconfirmed] | Focus: [feature area] — [error type]
+Keywords: [3–6 short terms from the ENREQ]
 
 📂 SIMILAR OPEN TICKETS (X found)
 
 [TICKET-KEY](https://smartsensebydigi.atlassian.net/browse/TICKET-KEY): [Summary]
-- Status: [status]
-- Linked Dev Ticket: [PROD-YYYY], [status, assignee]
-- Key Context: [relevant finding]
-- ⚠ Potential shared root cause: still unresolved (include only when it applies)
+- Status: [status] | Linked: [PROD-YYYY (status)] or None
+- Note: [one short sentence on why it is related]
+- ⚠ Shared root cause still open (include only when it applies)
 
 📁 SIMILAR CLOSED TICKETS (X found)
 
 [TICKET-KEY](https://smartsensebydigi.atlassian.net/browse/TICKET-KEY): [Summary]
-- Resolution: [Fixed / Won't Fix / etc.]
-- Fix Description: [what was done]
-- Fix Quality: [✅ Root cause resolution / ⚠️ Temporary fix / ❓ Inconclusive], [rationale]
-- Test Coverage Gaps:
-  - [Gap 1]
-  - [Gap 2]
-- Recurrence Risk: [High / Medium / Low]
+- Resolution: [Fixed / Won't Fix / etc.] | Quality: [✅ Root cause / ⚠️ Temporary / ❓ Inconclusive]
+- Fix: [one short sentence on what was done]
+- Gaps / Risk: [one short gap or "None found"] | [High / Medium / Low]
 
-(Add "X additional tickets found ..." note under each group when results were truncated.)
+(Add "X additional tickets found ..." note under each group when results were truncated. Show at most **2** tickets per group.)
 
 📊 GAP ANALYSIS SUMMARY
 
-Test Coverage Gaps: [numbered list]
-Fix Quality Overview: X root cause fixes, Y temporary, Z inconclusive
-Overall Recurrence Risk: [High / Medium / Low], [brief rationale]
+Test Coverage Gaps: [up to 3 short numbered items]
+Fix Quality Overview: X root cause, Y temporary, Z inconclusive
+Overall Recurrence Risk: [High / Medium / Low] — [one short rationale]
 
 💡 RECOMMENDATIONS
 
 ⭐ Priority 1: [highest priority recommendation]
 ⭐ Priority 2: [second priority recommendation]
-- [Additional recommendation]
-- [Additional recommendation]
+- [One additional recommendation, if needed]
 
-(Recommendations cover: new test cases to write with suggested scope; existing test cases to strengthen or extend; process improvements such as checklist items, review gates, monitoring or alerting.)
+(Recommendations cover: new test cases to write with suggested scope; existing test cases to strengthen or extend; process improvements such as checklist items, review gates, monitoring or alerting. Keep each recommendation to one or two sentences.)
 
 ---
 

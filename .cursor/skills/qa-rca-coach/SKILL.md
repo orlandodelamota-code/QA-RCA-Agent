@@ -1,13 +1,13 @@
 ---
 name: qa-rca-coach
 description: Coaches a QA team member through an ENREQ Mini Root Cause Analysis using the 5 Whys, and runs the Similar Ticket Investigation and Gap Analysis for bug-type ENREQs. Use whenever the user mentions an ENREQ key (ENREQ-1234), an RCA, Mini-RCA, 5 Whys, root cause, "similar tickets", "related incidents", "check history", CAPA, or when an automation sends a product-board ticket (AM, DASRV, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS) that just received the ENREQ label. Also use when the request arrives as a webhook payload containing a ticket key.
-last_updated: 2026-10-06
+last_updated: 2026-10-26
 created_by: odelamot@digi.com
 ---
 
 # QA RCA Coach
 
-Draft migrated from the Rovo agent "QA RCA Coach" (V4) and its sub-agent "ENREQ Similar Ticket Investigation & Gap Analysis" ([QA-3114](https://smartsensebydigi.atlassian.net/browse/QA-3114)). A responsible Digi employee must review it, and compare its output with the old agent, before it replaces the Rovo agent. Do not disable the Rovo agent from this skill.
+Draft migrated from the Rovo agent "QA RCA Coach" (V4) and its sub-agent "ENREQ Similar Ticket Investigation & Gap Analysis" ([QA-3114](https://smartsensebydigi.atlassian.net/browse/QA-3114)). Comment length and ticket-field cuts follow [QA-3552](https://smartsensebydigi.atlassian.net/browse/QA-3552). A responsible Digi employee must review it, and compare its output with the old agent, before it replaces the Rovo agent. Do not disable the Rovo agent from this skill.
 
 ## Choose a mode first
 
@@ -103,7 +103,7 @@ Mobile and web are separate. Only return tickets matching the source ENREQ's pla
 ### Search and limits
 - Search ENREQ tickets (open and closed) and also AM, DASRV, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS. Prioritize the ENREQ space.
 - Group by Open vs Closed, sorted by relevance.
-- Automated mode: top **3** per group. Interactive or manual: top **5** per group.
+- Automated and Interactive or manual: top **2** per group ([QA-3552](https://smartsensebydigi.atlassian.net/browse/QA-3552)).
 - Add a note on overflow: "X additional tickets found — ask to see more if needed" (interactive) or "X additional tickets found — run manually in Jira for full results" (automated).
 
 Build the search with JQL text search. Replace the old Rovo "Find similar work items" and "Find source of truth" tools with this search plus a Confluence search and a last-modified check.
@@ -124,11 +124,14 @@ Use a few precise phrases from the ENREQ. If the query is too broad, narrow it a
 5. For each kept ticket, read status, summary, resolution, linked product/dev tickets, and relevant comments. For closed tickets, use Jira's development or remote links for the documented fix. Read a GitLab or Bitbucket URL only when the issue actually links one. If no commit or PR is linked, say so and classify fix quality as inconclusive when the comments are also thin.
 6. For process citations, use `searchConfluence` and `getConfluenceContent`. Cite the page URL. Prefer the current page over a stale one (check the version date).
 
+### Search Criteria (keep short)
+One Source ENREQ line, one Platform | Focus line (feature area — error type), and one Keywords line (3–6 short terms). Do **not** list exclusions (they are silent), do **not** narrate how the query was narrowed, and do **not** paste dropped-ticket lists into Search Criteria.
+
 ### Open tickets
-For each: ticket key as a hyperlink `[KEY](https://smartsensebydigi.atlassian.net/browse/KEY)`, summary and status, status and assignee of any linked product/dev ticket, relevant QA/developer comment findings, and a flag if the same root cause may still be unresolved.
+For each of up to 2: hyperlinked key, summary; one Status | Linked line (linked product/dev key and status, or None); one short Note on why it is related; optional ⚠ Shared root cause still open. No multi-paragraph Key Context.
 
 ### Closed tickets
-For each: hyperlinked key, summary and resolution, documented fix, and a fix-quality assessment based on resolution notes, comments, and linked commits/PRs. Also review the linked test plan and test cases for coverage gaps (untested edge cases, missing regression scenarios, untested configurations), whether acceptance criteria validated the fix, and whether recurrence risk remains.
+For each of up to 2: hyperlinked key, summary; Resolution | Quality on one line; one short Fix sentence; Gaps / Risk on one line (one gap phrase or "None found", plus High / Medium / Low). Do not paste PR changelogs, multi-bullet gap lists, or long comment quotes.
 
 Fix quality classification:
 - ✅ Root cause resolution: the underlying systemic issue was addressed
@@ -136,15 +139,15 @@ Fix quality classification:
 - ❓ Inconclusive: insufficient evidence
 
 ### Gap Analysis summary
-Test coverage gaps; fix quality overview; overall recurrence risk:
+Up to 3 short test-coverage gaps; fix quality overview; overall recurrence risk with one short rationale:
 - **High** = 3+ recurrences OR 2+ temporary fixes
 - **Medium** = 1-2 recurrences with gaps
 - **Low** = isolated with root cause fix confirmed
 
-Recommendations: new test cases to write (with suggested scope), existing test cases to strengthen, process improvements. Flag the top 1-2 as priorities.
+Recommendations: at most two priority lines plus one optional extra. New test cases to write (with suggested scope), existing test cases to strengthen, process improvements. Keep each to one or two sentences.
 
 ### Output format
-Use the exact template in [references/output-format.md](references/output-format.md). It is the **only** permitted output for the investigation. No prose summaries, no "Context Summary" block, no narrative before or after. If a section has no findings, keep the header and write "None found". Self-check the output against the template before responding.
+Use the exact template in [references/output-format.md](references/output-format.md). It is the **only** permitted output for the investigation. No prose summaries, no "Context Summary" block, no narrative before or after. If a section has no findings, keep the header and write "None found". Self-check the output against the template before responding. Prefer brevity for first-glance Jira readability ([QA-3552](https://smartsensebydigi.atlassian.net/browse/QA-3552)).
 
 ### Investigation guardrails
 - Only surface data actually retrieved from Jira. Never fabricate ticket data.
@@ -157,7 +160,7 @@ Use the exact template in [references/output-format.md](references/output-format
 ## Automated mode specifics
 
 1. Run the gate checks.
-2. Run the investigation (top 3 per group).
+2. Run the investigation (top 2 per group).
 3. Write the structured output as an HTML coach comment on the triggering product-board ticket, with the quality-coach mentions for that project, ending with the Continue in RCA Coach block. Add it, or edit the existing marked comment (see One comment per ticket).
 4. Stop. No questions, no 5 Whys, no waiting.
 
