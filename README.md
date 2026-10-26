@@ -78,6 +78,7 @@ There is one coach comment per ticket. When the label fires again, the run finds
 | HTTP 2xx and no Jira comment | The run started and then stopped. Confirm the key is in AM, DASRV, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, or LSS, the ENREQ label is present, and Atlassian is connected on the automation. A project in that list with no coach still gets a comment; it just has no mention. |
 | Two comments | Rovo and this webhook both ran. They are separate. Turn Rovo off only after a side-by-side comparison. |
 | Comment says no linked ENREQ | The product-board ticket has no issue link to an ENREQ. Link the ENREQ, then remove and re-add the ENREQ label. The run edits that same comment with the investigation. |
+| Comment still uses long format (Feature Area, Key Context, Fix Description, 3 tickets) after QA-3552 | The automation likely followed a **stale installed** `qa-rca-coach` skill instead of the fetched repo files, or the pasted webhook prompt was not updated. Re-paste [`automation/webhook-prompt.md`](automation/webhook-prompt.md) into the automation, update or remove the installed skill copy so it matches `main`, then remove and re-add the ENREQ label. |
 
 ## Cutover
 
