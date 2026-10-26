@@ -98,7 +98,7 @@ Extract from the **linked ENREQ ticket only**: bug description, affected feature
 LSS is in the product-board list because [QA-2757](https://smartsensebydigi.atlassian.net/browse/QA-2757) found LSS bugs created from ENREQs were skipped when the escalated-clone rule omitted that project.
 
 ### Platform boundary
-Mobile and web are separate. Only return tickets matching the source ENREQ's platform. If a candidate's platform is unclear, include it marked **❓ Platform Unconfirmed** and say so in Key Context.
+Mobile and web are separate. Only return tickets matching the source ENREQ's platform. If a candidate's platform is unclear, include it marked **❓ Platform Unconfirmed** and say so in the one-line Note.
 
 ### Search and limits
 - Search ENREQ tickets (open and closed) and also AM, DASRV, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS. Prioritize the ENREQ space.
@@ -120,18 +120,25 @@ AND key != ENREQ-XXXX
 ORDER BY updated DESC
 ```
 
-Use a few precise phrases from the ENREQ. If the query is too broad, narrow it and say what you dropped in Search Criteria. Never invent a ticket that was not in the JQL response.
+Use a few precise phrases from the ENREQ. If the query is too broad, narrow it silently — do **not** write what you dropped into Search Criteria or anywhere else in the comment. Never invent a ticket that was not in the JQL response.
 5. For each kept ticket, read status, summary, resolution, linked product/dev tickets, and relevant comments. For closed tickets, use Jira's development or remote links for the documented fix. Read a GitLab or Bitbucket URL only when the issue actually links one. If no commit or PR is linked, say so and classify fix quality as inconclusive when the comments are also thin.
 6. For process citations, use `searchConfluence` and `getConfluenceContent`. Cite the page URL. Prefer the current page over a stale one (check the version date).
 
 ### Search Criteria (keep short)
-One Source ENREQ line, one Platform | Focus line (feature area — error type), and one Keywords line (3–6 short terms). Do **not** list exclusions (they are silent), do **not** narrate how the query was narrowed, and do **not** paste dropped-ticket lists into Search Criteria.
+Exactly three lines:
+1. `Source ENREQ: [KEY](url)`
+2. `Platform: … | Focus: [feature] — [error type]`
+3. `Keywords: …` (3–6 short terms)
+
+Do **not** list exclusions (they are silent), do **not** narrate how the query was narrowed, and do **not** paste dropped-ticket lists into Search Criteria.
+
+**Forbidden in the comment** (legacy long format — never use these labels or their content): `Feature Area:`, `Error Type:` as separate lines, `Excluded from results:`, `Key Context:`, `Linked Dev Ticket:`, `Fix Description:`, `Test Coverage Gaps:` as a multi-bullet list under a ticket, `Recurrence Risk:` as its own bullet, or any "Query narrowed" / "Dropped as" paragraph. Use the short field names in the template only.
 
 ### Open tickets
-For each of up to 2: hyperlinked key, summary; one Status | Linked line (linked product/dev key and status, or None); one short Note on why it is related; optional ⚠ Shared root cause still open. No multi-paragraph Key Context.
+Show **at most 2**. For each: hyperlinked key, summary; one `Status: … | Linked: …` line; one short `Note:` on why it is related; optional ⚠ Shared root cause still open. No multi-paragraph notes.
 
 ### Closed tickets
-For each of up to 2: hyperlinked key, summary; Resolution | Quality on one line; one short Fix sentence; Gaps / Risk on one line (one gap phrase or "None found", plus High / Medium / Low). Do not paste PR changelogs, multi-bullet gap lists, or long comment quotes.
+Show **at most 2**. For each: hyperlinked key, summary; `Resolution: … | Quality: …` on one line; one short `Fix:` sentence; `Gaps / Risk: … | High/Medium/Low` on one line. Do not paste PR changelogs, multi-bullet gap lists, or long comment quotes.
 
 Fix quality classification:
 - ✅ Root cause resolution: the underlying systemic issue was addressed
