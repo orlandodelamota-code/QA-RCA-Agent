@@ -4,7 +4,16 @@ Use this template exactly. Replace bracketed items. Keep every section header; w
 
 Keep the comment short enough for a first-glance Jira read. Prefer one short line per field. Do not paste long comment quotes, PR changelogs, or query-narrowing narratives into Search Criteria or ticket notes.
 
-**Hard reject before posting:** if the draft still has any of `Feature Area:`, `Error Type:` (separate line), `Excluded from results:`, `Key Context:`, `Linked Dev Ticket:`, `Fix Description:`, per-ticket `Test Coverage Gaps:` bullets, per-ticket `Recurrence Risk:`, more than **2** tickets under Open or under Closed, or a "Query narrowed" / "Dropped as" paragraph — rewrite to this template. Do not post the long draft.
+**Hard reject before posting:** if the draft still has any of `Feature Area:`, `Error Type:` (separate line), `Excluded from results:`, `Key Context:`, `Linked Dev Ticket:`, `Fix Description:`, per-ticket `Test Coverage Gaps:` bullets, per-ticket `Recurrence Risk:`, more than **2** tickets under Open or under Closed, a "Query narrowed" / "Dropped as" paragraph, an unlabeled `Shared root cause still open` line, a `Quality: ✅` without `| Evidence:`, or any causal / root-cause sentence that is not tagged **Verified** or **Hypothesis** — rewrite to this template. Do not post the long or uncited draft.
+
+### Causal claims (QA-3553)
+
+Every causal or root-cause statement in this comment must be labeled:
+
+- **Verified** — include at least one evidence link to a source you actually retrieved (Jira ticket, Confluence page, commit/PR, or documented log/reference)
+- **Hypothesis** — include confidence **High** / **Medium** / **Low** and/or `Needed evidence: …`
+
+Observational similarity ("same symptom", "same feature path", "reported again on build X") is not a causal claim and needs no label. Prefer Hypothesis when logs, dataset joins, or fix evidence were not retrieved — especially on analytics / data-pipeline ENREQs. Never present an inferred cause as fact.
 
 ---
 
@@ -20,14 +29,15 @@ Keywords: [3–6 short terms from the ENREQ]
 
 [TICKET-KEY](https://smartsensebydigi.atlassian.net/browse/TICKET-KEY): [Summary]
 - Status: [status] | Linked: [PROD-YYYY (status)] or None
-- Note: [one short sentence on why it is related]
-- ⚠ Shared root cause still open (include only when it applies)
+- Note: [one short sentence on why it is related — similarity only, or Verified/Hypothesis if stating a cause]
+- ⚠ Shared cause: Verified — [evidence link] | still open
+  (or: ⚠ Shared cause: Hypothesis (High|Medium|Low) — Needed evidence: [what]; omit the flag when it does not apply)
 
 📁 SIMILAR CLOSED TICKETS (X found)
 
 [TICKET-KEY](https://smartsensebydigi.atlassian.net/browse/TICKET-KEY): [Summary]
-- Resolution: [Fixed / Won't Fix / etc.] | Quality: [✅ Root cause / ⚠️ Temporary / ❓ Inconclusive]
-- Fix: [one short sentence on what was done]
+- Resolution: [Fixed / Won't Fix / etc.] | Quality: [✅ Root cause | Evidence: link] / [⚠️ Temporary] / [❓ Inconclusive]
+- Fix: [one short sentence on what was done; if naming a remaining cause, tag Hypothesis (confidence) — Needed evidence: …]
 - Gaps / Risk: [one short gap or "None found"] | [High / Medium / Low]
 
 (Add "X additional tickets found ..." note under each group when results were truncated. Show at most **2** tickets per group.)
@@ -36,7 +46,7 @@ Keywords: [3–6 short terms from the ENREQ]
 
 Test Coverage Gaps: [up to 3 short numbered items]
 Fix Quality Overview: X root cause, Y temporary, Z inconclusive
-Overall Recurrence Risk: [High / Medium / Low] — [one short rationale]
+Overall Recurrence Risk: [High / Medium / Low] — [one short rationale; tag Verified/Hypothesis only if the rationale states a cause]
 
 💡 RECOMMENDATIONS
 
@@ -44,7 +54,7 @@ Overall Recurrence Risk: [High / Medium / Low] — [one short rationale]
 ⭐ Priority 2: [second priority recommendation]
 - [One additional recommendation, if needed]
 
-(Recommendations cover: new test cases to write with suggested scope; existing test cases to strengthen or extend; process improvements such as checklist items, review gates, monitoring or alerting. Keep each recommendation to one or two sentences.)
+(Recommendations cover: new test cases to write with suggested scope; existing test cases to strengthen or extend; process improvements such as checklist items, review gates, monitoring or alerting. Keep each recommendation to one or two sentences. Do not embed unmarked root-cause assertions.)
 
 ---
 

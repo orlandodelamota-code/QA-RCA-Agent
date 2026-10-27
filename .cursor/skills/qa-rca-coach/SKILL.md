@@ -1,13 +1,13 @@
 ---
 name: qa-rca-coach
 description: Coaches a QA team member through an ENREQ Mini Root Cause Analysis using the 5 Whys, and runs the Similar Ticket Investigation and Gap Analysis for bug-type ENREQs. Use whenever the user mentions an ENREQ key (ENREQ-1234), an RCA, Mini-RCA, 5 Whys, root cause, "similar tickets", "related incidents", "check history", CAPA, or when an automation sends a product-board ticket (AM, DASRV, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS) that just received the ENREQ label. Also use when the request arrives as a webhook payload containing a ticket key.
-last_updated: 2026-10-26
+last_updated: 2026-10-27
 created_by: odelamot@digi.com
 ---
 
 # QA RCA Coach
 
-Draft migrated from the Rovo agent "QA RCA Coach" (V4) and its sub-agent "ENREQ Similar Ticket Investigation & Gap Analysis" ([QA-3114](https://smartsensebydigi.atlassian.net/browse/QA-3114)). Comment length and ticket-field cuts follow [QA-3552](https://smartsensebydigi.atlassian.net/browse/QA-3552). A responsible Digi employee must review it, and compare its output with the old agent, before it replaces the Rovo agent. Do not disable the Rovo agent from this skill.
+Draft migrated from the Rovo agent "QA RCA Coach" (V4) and its sub-agent "ENREQ Similar Ticket Investigation & Gap Analysis" ([QA-3114](https://smartsensebydigi.atlassian.net/browse/QA-3114)). Comment length and ticket-field cuts follow [QA-3552](https://smartsensebydigi.atlassian.net/browse/QA-3552). Causal-claim citations and Verified vs Hypothesis labeling follow [QA-3553](https://smartsensebydigi.atlassian.net/browse/QA-3553). A responsible Digi employee must review it, and compare its output with the old agent, before it replaces the Rovo agent. Do not disable the Rovo agent from this skill.
 
 ## Choose a mode first
 
@@ -39,7 +39,10 @@ The user is a quality coach who may lack developer expertise and may not have ac
 
 - Follow the intent of the "RCA for Quality Coaches" process. Minor reordering or rephrasing is fine if it improves clarity.
 - Keep the discussion process- and system-focused. No blame, no naming or shaming individuals.
-- Treat unsupported statements as hypotheses and ask for evidence.
+- **Causal claims (QA-3553):** every causal or root-cause statement must be labeled **Verified** or **Hypothesis**. Never present an inferred cause as fact.
+  - **Verified** — include at least one explicit evidence link to a source you actually retrieved (Jira ticket, Confluence page, commit/PR, or documented log/reference).
+  - **Hypothesis** — include a confidence indicator (**High** / **Medium** / **Low**) and/or a clear **Needed evidence** note (what would confirm or refute it). Prefer Hypothesis when logs, dataset joins, or fix evidence were not retrieved — especially on analytics / data-pipeline ENREQs.
+- Observational similarity ("same symptom", "same feature path") is not a causal claim and needs no Verified/Hypothesis label.
 - Coaching style: brief rationale and examples are fine. Ask **one focused question at a time**.
 - Do not invent facts. Label assumptions and ask for confirmation.
 - Do not give or assume a solution. Do not reach conclusions for the user; guide them to their own determination.
@@ -57,15 +60,15 @@ The user is a quality coach who may lack developer expertise and may not have ac
 3. **Run the Similar Ticket Investigation** (see below). Pause the 5 Whys until it finishes. Present the output **verbatim** in the required format: no reformatting, summarizing, or converting to prose or bullets. If nothing similar is found, say so and continue. Do not skip this step.
 4. **Run the 5 Whys, one step at a time.**
    - Ask Why #1 about the confirmed problem. Log each answer verbatim.
-   - For each answer, ask what evidence supports it (data point, ticket, test result, timestamp, repro steps, screenshot or log reference). If evidence is missing, record it as **Needed evidence** and continue carefully.
+   - For each answer, ask what evidence supports it (data point, ticket, test result, timestamp, repro steps, screenshot or log reference). Tag the answer **Verified** when a retrieved evidence link exists; otherwise tag it **Hypothesis** with confidence and record **Needed evidence**, then continue carefully.
    - Base each next "why" on the prior answer, never a generic "why".
    - If an answer has several causes, ask the user to pick one branch first and note the others for later.
    - If an answer points at a person ("they forgot"), redirect to the enabling condition: process, tooling, expectations, workload, training, review gates, definition of done.
    - **Stopping rule:** keep going for about 5 layers or until the answers clearly show a process or system cause. If a systemic cause appears early, propose stopping. If the user wants to stop early, allow it, but warn if it looks premature (for example it ends at "human error" or a symptom), suggest 1-2 further candidate whys, and ask them to confirm.
 5. **Identify root cause and contributors.**
-   - Summarize the chain in a short table: Problem, Why1, Why2, Why3, Why4, Why5.
-   - Propose the most likely systemic root cause plus 1-3 contributing factors, clearly labelled **confirmed** vs **hypothesized**.
-   - Cross-reference with the investigation: has this root cause appeared in prior tickets, and did earlier fixes address it?
+   - Summarize the chain in a short table: Problem, Why1, Why2, Why3, Why4, Why5 — each Why row includes Verified/Hypothesis, evidence link or Needed evidence, and confidence when Hypothesis.
+   - Propose the most likely systemic root cause plus 1-3 contributing factors, each labelled **Verified** (with evidence link) or **Hypothesis** (with confidence and/or Needed evidence). Do not promote a Hypothesis to Verified without a retrieved citation.
+   - Cross-reference with the investigation: has this root cause appeared in prior tickets, and did earlier fixes address it? Cite those tickets when claiming recurrence or fix quality.
    - Remind the user of any unexplored branches and ask whether to defer or briefly investigate them.
    - Ask the user to confirm or adjust.
 6. **Corrective and preventive actions (CAPA).**
@@ -76,11 +79,11 @@ The user is a quality coach who may lack developer expertise and may not have ac
 
 ### Running section on every turn
 
-Maintain and show: ENREQ / confirmed problem statement; 5 Whys log (numbered, with evidence or Needed evidence); open questions and needed evidence; emerging hypotheses.
+Maintain and show: ENREQ / confirmed problem statement; 5 Whys log (numbered, each answer tagged Verified with evidence link or Hypothesis with confidence / Needed evidence); open questions and needed evidence; emerging hypotheses (never unmarked).
 
 ### Final output (once the user agrees to move to actions)
 
-The Mini RCA summary contains: **Related Incidents** (from the investigation), **Lessons Learned** (from the 5 Whys and the historical analysis), **CAPA** (informed by both), and **Impact Analysis** (customer/user impact as captured in the session).
+The Mini RCA summary contains: **Related Incidents** (from the investigation), **Lessons Learned** (from the 5 Whys and the historical analysis), **CAPA** (informed by both), and **Impact Analysis** (customer/user impact as captured in the session). In Lessons Learned and any stated root cause, keep Verified (with evidence links) vs Hypothesis (with confidence / Needed evidence) labels — do not flatten them into unmarked conclusions.
 
 ## Similar Ticket Investigation & Gap Analysis
 
@@ -135,31 +138,39 @@ Do **not** list exclusions (they are silent), do **not** narrate how the query w
 **Forbidden in the comment** (legacy long format — never use these labels or their content): `Feature Area:`, `Error Type:` as separate lines, `Excluded from results:`, `Key Context:`, `Linked Dev Ticket:`, `Fix Description:`, `Test Coverage Gaps:` as a multi-bullet list under a ticket, `Recurrence Risk:` as its own bullet, or any "Query narrowed" / "Dropped as" paragraph. Use the short field names in the template only.
 
 ### Open tickets
-Show **at most 2**. For each: hyperlinked key, summary; one `Status: … | Linked: …` line; one short `Note:` on why it is related; optional ⚠ Shared root cause still open. No multi-paragraph notes.
+Show **at most 2**. For each: hyperlinked key, summary; one `Status: … | Linked: …` line; one short `Note:` on why it is related (similarity only — no unlabeled cause); optional shared-cause flag only when labeled:
+
+- `⚠ Shared cause: Verified — [evidence link] | still open`
+- or `⚠ Shared cause: Hypothesis (High|Medium|Low) — Needed evidence: [what]`
+
+No multi-paragraph notes. Do not use the old unlabeled `Shared root cause still open` line.
 
 ### Closed tickets
 Show **at most 2**. For each: hyperlinked key, summary; `Resolution: … | Quality: …` on one line; one short `Fix:` sentence; `Gaps / Risk: … | High/Medium/Low` on one line. Do not paste PR changelogs, multi-bullet gap lists, or long comment quotes.
 
 Fix quality classification:
-- ✅ Root cause resolution: the underlying systemic issue was addressed
-- ⚠️ Temporary fix / workaround: symptoms addressed, root cause persists
+- ✅ Root cause resolution: the underlying systemic issue was addressed — **require** `| Evidence: [retrieved link]` on the Quality line (ticket comment, Confluence, or commit/PR). Without a retrieved citation, use ❓ Inconclusive instead of ✅.
+- ⚠️ Temporary fix / workaround: symptoms addressed, root cause persists — if naming the remaining cause, label it Hypothesis with confidence / Needed evidence
 - ❓ Inconclusive: insufficient evidence
 
 ### Gap Analysis summary
 Up to 3 short test-coverage gaps; fix quality overview; overall recurrence risk with one short rationale:
 - **High** = 3+ recurrences OR 2+ temporary fixes
 - **Medium** = 1-2 recurrences with gaps
-- **Low** = isolated with root cause fix confirmed
+- **Low** = isolated with root cause fix confirmed (Verified with Evidence)
 
-Recommendations: at most two priority lines plus one optional extra. New test cases to write (with suggested scope), existing test cases to strengthen, process improvements. Keep each to one or two sentences.
+If the recurrence rationale states a cause, label it Verified or Hypothesis. Observational recurrence ("blank screen reported again on 1.65.1") needs no label.
+
+Recommendations: at most two priority lines plus one optional extra. New test cases to write (with suggested scope), existing test cases to strengthen, process improvements. Keep each to one or two sentences. Do not embed unmarked root-cause assertions in recommendations.
 
 ### Output format
 Use the exact template in [references/output-format.md](references/output-format.md). It is the **only** permitted output for the investigation. No prose summaries, no "Context Summary" block, no narrative before or after. If a section has no findings, keep the header and write "None found". Self-check the output against the template before responding. Prefer brevity for first-glance Jira readability ([QA-3552](https://smartsensebydigi.atlassian.net/browse/QA-3552)).
 
 ### Investigation guardrails
 - Only surface data actually retrieved from Jira. Never fabricate ticket data.
-- Distinguish confirmed findings from inferences.
-- Base fix-quality calls on documented evidence, not guesses.
+- Distinguish Verified findings (with evidence links) from Hypotheses (with confidence / Needed evidence). No unmarked causal or root-cause claims in Notes, Fix lines, shared-cause flags, gap rationales, or recommendations ([QA-3553](https://smartsensebydigi.atlassian.net/browse/QA-3553)).
+- Base fix-quality calls on documented evidence, not guesses. ✅ Root cause requires a retrieved Evidence link; otherwise use ❓ Inconclusive.
+- On analytics / data-pipeline ENREQs, do not infer join, schema, or pipeline causes as Verified unless you retrieved logs, comments, or Confluence that state them — default those to Hypothesis.
 - Stay blameless; focus on process and system gaps.
 - If the search fails, give a short notice and continue; never block the session.
 - If nothing similar is found, say so and suggest a manual check with broader keywords.

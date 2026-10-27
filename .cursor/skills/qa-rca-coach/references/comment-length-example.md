@@ -28,7 +28,7 @@ Keywords: blank white screen, SmartSense App, iOS, app 1.65.1, SSO
 [ENREQ-9073](https://smartsensebydigi.atlassian.net/browse/ENREQ-9073): SmartSense App 1.64.1 Blank white Screen when using SSO to Login: Darden
 - Status: In Progress | Linked: AM-4460 (Closed), AM-4479 (Done)
 - Note: Same blank-screen / SSO path on 1.64.1; still open while ENREQ-9220 reports it again on 1.65.1.
-- ⚠ Shared root cause still open
+- ⚠ Shared cause: Hypothesis (Medium) — Needed evidence: on-device log or linked commit showing the same launch-path failure on 1.65.1 and 1.64.1
 
 [AM-4550](https://smartsensebydigi.atlassian.net/browse/AM-4550): Investigate why Company Code 'Darden' fails for SSO on Android (blank "Log In SSO" screen)
 - Status: Refine | Linked: AM-4479 (Done)
@@ -40,7 +40,7 @@ Keywords: blank white screen, SmartSense App, iOS, app 1.65.1, SSO
 
 [AM-4524](https://smartsensebydigi.atlassian.net/browse/AM-4524): App intermittently whitescreens at launch (pre-login) — suspected corrupted persisted session state
 - Resolution: Done | Quality: ⚠️ Temporary
-- Fix: Launch-path hardening and session clear shipped in 1.65.1 (Bitbucket PR 1073).
+- Fix: Launch-path hardening and session clear shipped in 1.65.1 (Bitbucket PR 1073). Hypothesis (Medium): remaining cause is a bad persisted session that still whitescreens — Needed evidence: on-device retest of a corrupted session on 1.65.1
 - Gaps / Risk: No recorded on-device retest of a bad persisted session on 1.65.1 | High
 
 [AM-4460](https://smartsensebydigi.atlassian.net/browse/AM-4460): [ENREQ-9073] SmartSense App 1.64.1 Blank white Screen when using SSO to Login
@@ -68,4 +68,4 @@ Overall Recurrence Risk: High — blank screen still reported on the build that 
 
 ## First-glance verdict
 
-Still enough for a reviewer to see: source and platform, the two closest open and closed tickets with status/fix quality, shared-cause risk, top gaps, and two actions. Detail that moved out of the comment (full PR changelog, dropped-ticket list, third ticket in each group) remains available by opening the linked tickets or running a broader Jira search from the overflow note.
+Still enough for a reviewer to see: source and platform, the two closest open and closed tickets with status/fix quality, shared-cause risk, top gaps, and two actions. Causal wording uses Verified/Hypothesis labels per [QA-3553](https://smartsensebydigi.atlassian.net/browse/QA-3553) (see [causal-claims-example.md](causal-claims-example.md)). Detail that moved out of the comment (full PR changelog, dropped-ticket list, third ticket in each group) remains available by opening the linked tickets or running a broader Jira search from the overflow note.
