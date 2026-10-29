@@ -4,7 +4,7 @@ Use this template exactly. Replace bracketed items. Keep every section header; w
 
 Keep the comment short enough for a first-glance Jira read. Prefer one short line per field. Do not paste long comment quotes, PR changelogs, or query-narrowing narratives into Search Criteria or ticket notes.
 
-**Hard reject before posting:** if the draft still has any of `Feature Area:`, `Error Type:` (separate line), `Excluded from results:`, `Key Context:`, `Linked Dev Ticket:`, `Fix Description:`, per-ticket `Test Coverage Gaps:` bullets, per-ticket `Recurrence Risk:`, more than **2** tickets under Open or under Closed, more than **2** Related TestRail items, more than **2** Related Code / Bitbucket items, a "Query narrowed" / "Dropped as" paragraph, an unlabeled `Shared root cause still open` line, a `Quality: ✅` without `| Evidence:`, any causal / root-cause sentence that is not tagged **Verified** or **Hypothesis**, or any TestRail case / Bitbucket PR / file path that was not retrieved — rewrite to this template. Do not post the long or uncited draft.
+**Hard reject before posting:** if the draft still has any of `Feature Area:`, `Error Type:` (separate line), `Excluded from results:`, `Key Context:`, `Linked Dev Ticket:`, `Fix Description:`, per-ticket `Test Coverage Gaps:` bullets, per-ticket `Recurrence Risk:`, more than **2** tickets under Open or under Closed, more than **2** Related TestRail items, more than **2** Related Code / Bitbucket items, more than **2** Recent release / merge timing lines, a "Query narrowed" / "Dropped as" paragraph, an unlabeled `Shared root cause still open` line, a `Quality: ✅` without `| Evidence:`, any causal / root-cause sentence that is not tagged **Verified** or **Hypothesis**, an unmarked claim that a merge or release *caused* the bug, or any TestRail case / Bitbucket PR / file path / merge date / release fact that was not retrieved — rewrite to this template. Do not post the long or uncited draft.
 
 ### Causal claims (QA-3553)
 
@@ -52,9 +52,17 @@ Keywords: [3–6 short terms from the ENREQ]
 🔧 RELATED CODE / BITBUCKET (X found | unavailable | none)
 
 [PR or commit link]: [one-line title]
-- Repo: [workspace/repo] | Tied to: [ticket key] | Paths: [up to 3 retrieved file paths, or "not listed"]
+- Repo: [workspace/repo] | Tied to: [ticket key] | Paths: [up to 3 retrieved file paths, or "not listed"] | Merge: [MERGED + date from Graph/PR, or "status unknown"]
 
-(Or a single line: `None found` / `Bitbucket / code search unavailable — continued with linked PRs/commits only` / `Bitbucket / code search unavailable — continued with Jira/Confluence only`. Show at most **2** PRs or commits. Never invent paths or PR numbers.)
+(Or a single line: `None found` / `Bitbucket / code search unavailable — continued with linked PRs/commits only` / `Bitbucket / code search unavailable — continued with Jira/Confluence only`. Show at most **2** PRs or commits. Never invent paths, PR numbers, or merge dates.)
+
+⏱ RECENT RELEASE / MERGE TIMING (X found | unavailable | none)
+
+- Release: [RLM-KEY or version name] — [status/date from retrieved ticket or version] | Reported on: [app/build version or Affects version from ENREQ]
+- Merge window: [PR link or id] — [MERGED + timestamp] relative to ENREQ/report date
+- Optional note: Hypothesis (confidence) — Needed evidence: […] only when claiming a merge/release *introduced* the bug
+
+(Or a single line: `None found` / `Release / merge timing unavailable — continued with Jira/Confluence only`. Show at most **2** timing lines. Timeline facts alone need no Verified/Hypothesis label.)
 
 📊 GAP ANALYSIS SUMMARY
 

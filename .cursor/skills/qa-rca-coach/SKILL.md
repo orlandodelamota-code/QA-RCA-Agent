@@ -17,7 +17,7 @@ Draft migrated from the Rovo agent "QA RCA Coach" (V4) and its sub-agent "ENREQ 
 | **Interactive** | A person opens a session (with or without an ENREQ key) | Run the full coaching flow below. |
 | **Manual re-run** | User says "search for similar tickets", "related incidents", "check history", "any past issues like this" mid-session | Re-run the investigation and produce a condensed delta update instead of the full output. |
 | **Continue** | The user opens from the Continue link, or says the investigation already ran and to go to the 5 Whys | Do not re-run the investigation. Read the ENREQ and the investigation comment (including any Related TestRail / Related Code blocks), then start the 5 Whys. Focused TestRail or Bitbucket lookups during the 5 Whys are still allowed. |
-| **Evidence dig (mid–5 Whys)** | User asks to check TestRail, Bitbucket, code, related tests, or a PR while the 5 Whys are in progress | Do **not** re-run the full investigation. Run a focused TestRail and/or Bitbucket search for the current Why, attach hits as evidence, then continue the 5 Whys. |
+| **Evidence dig (mid–5 Whys)** | User asks to check TestRail, Bitbucket, code, related tests, a PR, a recent release, merge history, or Compass while the 5 Whys are in progress | Do **not** re-run the full investigation. Run a focused TestRail, Bitbucket, and/or release/merge timing search for the current Why, attach hits as evidence, then continue the 5 Whys. |
 
 If unsure, treat the session as Interactive.
 
@@ -62,11 +62,12 @@ The user is a quality coach who may lack developer expertise and may not have ac
 4. **Run the 5 Whys, one step at a time.**
    - Ask Why #1 about the confirmed problem. Log each answer verbatim.
    - For each answer, ask what evidence supports it (data point, ticket, test result, timestamp, repro steps, screenshot or log reference). Tag the answer **Verified** when a retrieved evidence link exists; otherwise tag it **Hypothesis** with confidence and record **Needed evidence**, then continue carefully.
-   - **Deepen with TestRail / Bitbucket during the 5 Whys** ([QA-3554](https://smartsensebydigi.atlassian.net/browse/QA-3554)): when Needed evidence points at coverage, a missing regression, a code path, or a prior fix — or when the user asks to "check TestRail", "look in Bitbucket", "find the PR", or "see related tests" — run a focused additive search (same rules as investigation steps 7–8). Prefer keywords from the current Why answer, not a broad re-run of the whole investigation.
+   - **Deepen with TestRail / Bitbucket / release timing during the 5 Whys** ([QA-3554](https://smartsensebydigi.atlassian.net/browse/QA-3554)): when Needed evidence points at coverage, a missing regression, a code path, a prior fix, or "did a recent release/merge introduce this" — or when the user asks to "check TestRail", "look in Bitbucket", "find the PR", "see related tests", "was this a recent release", or "when did this code change" — run a focused additive search (same rules as investigation steps 7–9). Prefer keywords from the current Why answer, not a broad re-run of the whole investigation.
      - Offer the search in one short sentence, then do it when the user agrees or when they already asked. Do not interrupt every Why with a tool call.
-     - Bring back at most **2** TestRail hits and **2** Bitbucket / code hits as evidence for that Why (case/PR links, file paths, coverage note). Attach them to the Why log as Verified evidence when retrieved; if the search finds nothing or tools are unavailable, keep the Why as Hypothesis and update Needed evidence.
-     - Use findings to inform the *next* Why question (for example "C65333 covers SSO login but not corrupt-session cold open — why was AC1 left without a case?"). Do not jump to a root-cause conclusion for the user.
-     - Reuse Related TestRail / Related Code items from the investigation comment when they already answer the Needed evidence — do not re-search the same query unless the user asks or the Why branch changed.
+     - Bring back at most **2** TestRail hits, **2** Bitbucket / code hits, and **2** release/merge timing lines as evidence for that Why (case/PR/RLM links, file paths, merge or deploy dates, coverage note). Attach retrieved facts as Verified evidence; if the search finds nothing or tools are unavailable, keep the Why as Hypothesis and update Needed evidence.
+     - When reading merge history or Compass/component deployments, present the timeline first. Any statement that a specific merge *caused* the bug stays **Hypothesis** until a retrieved source says so.
+     - Use findings to inform the *next* Why question (for example "C65333 covers SSO login but not corrupt-session cold open — why was AC1 left without a case?" or "PR 1073 merged around the 1.65.1 release — what changed in App.js hydration?"). Do not jump to a root-cause conclusion for the user.
+     - Reuse Related TestRail / Related Code / timing items from the investigation comment when they already answer the Needed evidence — do not re-search the same query unless the user asks or the Why branch changed.
    - Base each next "why" on the prior answer, never a generic "why".
    - If an answer has several causes, ask the user to pick one branch first and note the others for later.
    - If an answer points at a person ("they forgot"), redirect to the enabling condition: process, tooling, expectations, workload, training, review gates, definition of done.
@@ -103,9 +104,10 @@ These same attributes drive the additive TestRail and Bitbucket / code searches 
 | Source | Parameters derived from the ENREQ | What to look for |
 |--------|-----------------------------------|------------------|
 | **TestRail** | Feature area, error type, platform, 2–4 short keywords; also the ENREQ key and linked product-board keys as **refs** | Related cases (`C#####`), suites/sections, regression coverage, and runs (`R#####`) whose title or refs match |
-| **Bitbucket / Git** | Feature keywords, service/component, file or module names mentioned on the ENREQ or similar tickets; linked ticket keys | Linked PRs, commits, changed files, and release context tied to the ENREQ or its similar tickets |
+| **Bitbucket / Git** | Feature keywords, service/component, file or module names mentioned on the ENREQ or similar tickets; linked ticket keys | Linked PRs, commits, changed files, merge timestamps, and release context tied to the ENREQ or its similar tickets |
+| **Recent release / merge timing** | Reported app/build/fix version, ENREQ created/updated dates, Affects/Fix versions, linked RLM or release tickets, Compass/component name when known | Whether the symptom lines up with a **recent release** or a **recent merged change** — without claiming that merge caused the bug unless evidence supports it |
 
-Jira and Confluence remain the primary similar-ticket search. TestRail and Bitbucket are **additive** — they strengthen Gap Analysis and recommendations; they do not replace ticket search.
+Jira and Confluence remain the primary similar-ticket search. TestRail, Bitbucket, Compass, and release/merge timing are **additive** — they strengthen Gap Analysis and recommendations; they do not replace ticket search.
 
 ### Exclusions (remove silently, do not count in totals)
 - The ENREQ being investigated.
@@ -148,10 +150,18 @@ Use a few precise phrases from the ENREQ. If the query is too broad, narrow it s
    - Never fabricate case ids, titles, or coverage. If nothing matched, write `None found`.
 8. **Additive Bitbucket / code search** ([QA-3554](https://smartsensebydigi.atlassian.net/browse/QA-3554)) — surface related code and release context.
    - **From Jira first (always):** collect Bitbucket / GitLab PR and commit URLs from the ENREQ and kept tickets (description, comments, remote links). Prefer human-readable links such as `https://bitbucket.org/<workspace>/<repo>/pull-requests/<id>`.
-   - **Teamwork Graph (when available):** `getGraphContext` on the ENREQ and on closed similar tickets with `objectType: "JiraWorkItem"`, then follow `jira_work_item_links_external_pull_request` and `jira_work_item_links_external_commit`. Call `getGraphObject` on returned ARIs when you need title or URL. Cap at **2** PRs or commits in the comment.
+   - **Teamwork Graph (when available):** `getGraphContext` on the ENREQ and on closed similar tickets with `objectType: "JiraWorkItem"`, then follow `jira_work_item_links_external_pull_request` and `jira_work_item_links_external_commit`. Call `getGraphObject` on returned ARIs when you need title, URL, `pullRequestStatus`, and timestamps (`createdAt` / `lastUpdatedAt`). Cap at **2** PRs or commits in the comment.
    - **Code search (when workspaces are accessible):** `executeRead` `searchCode` with a short natural-language or lexical query from the ENREQ feature/error keywords. If the response says no accessible workspaces, note `Bitbucket / code search unavailable — continued with linked PRs/commits only` (or Jira-only if none were linked) and continue.
+   - When a PR ARI or code-search hit gives a commit hash and `getCodeFile` / `listCodeDirectory` is available, optionally read the named file at that commit to help the coach see *what* changed — cite the path and commit; do not paste large diffs into the comment.
    - Use retrieved file paths from linked tickets (for example `App.js`, `StatePersist.js`) as starting points for coaches — cite the ticket or PR that named them. Do not invent paths.
    - Never fabricate PRs, commits, or file paths. If nothing matched, write `None found`.
+9. **Recent release / merge timing** ([QA-3554](https://smartsensebydigi.atlassian.net/browse/QA-3554)) — help the coach see whether this looks like a **recent-release** or **recent-merge** issue. Keep it observational unless a retrieved source states the cause.
+   - **Versions on the ENREQ / product board:** read Affects versions, Fix versions, and any build or app version in the description (for example `1.65.1`). Note the ENREQ created date.
+   - **Release tickets:** search or follow links to RLM (or project release) tickets for that version; record key, summary, status (for example Deployed), and dates from the issue. Optionally `executeRead` `getJiraProjectVersions` for the product project when a version name is known.
+   - **Merged PR timing:** from step 8 Graph objects, record `MERGED` status and `lastUpdatedAt` / merge-related timestamps next to the PR. Compare roughly to the ENREQ report date and the release ticket date (for example "PR 1073 last updated 2026-10-13; RLM-915 Deployed; ENREQ cites 1.65.1").
+   - **Compass / component (when available):** `executeRead` `listJiraProjectComponents` with `componentSource: "compass"` (or `"auto"`) on the product-board project to find the matching service/repo component. If a Compass component ARI or URL is known, `getGraphContext` with `objectType: "CompassComponent"` and follow deployment / repo relationships when present. If Compass is not linked or the call fails, write one limitation line and continue — do not invent deployment history.
+   - Cap the comment at **2** timing lines (one release + one merge, or two of whichever was found). Label any claim that a merge *caused* the bug as **Hypothesis** with Needed evidence (unless a retrieved comment/PR states it — then **Verified** with that link). Pure timeline facts need no Verified/Hypothesis label.
+   - If nothing timing-related was found: `None found`. If tools failed: `Release / merge timing unavailable — continued with Jira/Confluence only`.
 
 ### Search Criteria (keep short)
 Exactly three lines:
@@ -179,8 +189,10 @@ Fix quality classification:
 - ⚠️ Temporary fix / workaround: symptoms addressed, root cause persists — if naming the remaining cause, label it Hypothesis with confidence / Needed evidence
 - ❓ Inconclusive: insufficient evidence
 
-### Related TestRail and Related Code / Bitbucket
-Show these two short blocks after Closed tickets and before Gap Analysis (template in [references/output-format.md](references/output-format.md)). At most **2** items each. Prefer hyperlinked case/PR ids with one match line and one coverage or path note. Fold strong hits into Gap Analysis and Recommendations (cite the C-id or PR). When a source is unavailable, keep the header and the single limitation line — do not omit the section.
+### Related TestRail, Related Code / Bitbucket, and Recent release / merge timing
+Show these short blocks after Closed tickets and before Gap Analysis (template in [references/output-format.md](references/output-format.md)). At most **2** items each. Prefer hyperlinked case/PR/release ids with one match or timing line. Fold strong hits into Gap Analysis and Recommendations (cite the C-id, PR, or RLM key). When a source is unavailable, keep the header and the single limitation line — do not omit the section.
+
+On Related Code lines, include merge status and date when Graph or the PR page retrieved them (for example `Merged ~2026-10-13`). On Recent release / merge timing, state the timeline only; do not unmarked-claim that a merge introduced the bug.
 
 ### Gap Analysis summary
 Up to 3 short test-coverage gaps; fix quality overview; overall recurrence risk with one short rationale:
@@ -249,8 +261,10 @@ Needed capabilities, all through that integration:
 - Read issues and links (including clone links and issue type): `getJiraIssue` with `view: "evidence"`
 - JQL search across ENREQ, AM, DASRV, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS: `searchJiraIssuesUsingJql`
 - Read comments: `executeRead` with `name: "listJiraIssueComments"` (`cloudId` is a top-level argument, not inside `inputs`). `getJiraIssue` does not return comment bodies.
-- Read linked commits/PRs from the issue's development or remote links, and from Teamwork Graph (`getGraphContext` / `getGraphObject` for `ExternalPullRequest` and `ExternalCommit`) when available
-- Optional code search across connected Bitbucket workspaces: `executeRead` `name: "searchCode"` (continue without it when workspaces are inaccessible)
+- Read linked commits/PRs from the issue's development or remote links, and from Teamwork Graph (`getGraphContext` / `getGraphObject` for `ExternalPullRequest` and `ExternalCommit`) when available — use merge status and timestamps for timing
+- Optional code search / file read across connected Bitbucket workspaces: `executeRead` `name: "searchCode"` and `getCodeFile` (continue without them when workspaces are inaccessible)
+- Release timing: Affects/Fix versions on the issue; RLM or release tickets; `executeRead` `getJiraProjectVersions` when a version name is known
+- Optional Compass: `executeRead` `listJiraProjectComponents` with `componentSource: "compass"` or `"auto"`; `getGraphContext` on `CompassComponent` / deployment links when an ARI is available
 - Read Confluence pages: `searchConfluence`, `getConfluenceContent`
 - Optional TestRail: any connected TestRail MCP / Forge tool, or TestRail URLs and C/R ids already on Jira tickets. Host: `https://smartsensetest.testrail.io`. Do not create or store a TestRail API token in this skill.
 - Add or edit the coach comment (Automated mode only, after the production-posting confirmation): `addOrEditJiraIssueComment`, passing the existing comment id when editing
