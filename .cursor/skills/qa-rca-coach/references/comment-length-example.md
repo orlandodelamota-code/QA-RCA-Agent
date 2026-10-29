@@ -62,10 +62,10 @@ Overall Recurrence Risk: High — blank screen still reported on the build that 
 
 💡 RECOMMENDATIONS
 
-⭐ Priority 1: Add an iOS regression on 1.65.1 for cold open with a persisted session and SSO company-code login; fail if the screen stays blank.
+⭐ Priority 1: Add an iOS regression test on 1.65.1 for cold open with a persisted session and SSO company-code login; fail if the screen stays blank.
 ⭐ Priority 2: Finish a durable QA SSO login (AM-2478) so this path can be tested without a customer device.
 - On a 1.65.1 device that still whitescreens, record whether the AM-4524 error boundary or AM-4479 toast appears.
 
 ## First-glance verdict
 
-Still enough for a reviewer to see: source and platform, the two closest open and closed tickets with status/fix quality, shared-cause risk, top gaps, and two actions. Causal wording uses Verified/Hypothesis labels per [QA-3553](https://smartsensebydigi.atlassian.net/browse/QA-3553) (see [causal-claims-example.md](causal-claims-example.md)). Detail that moved out of the comment (full PR changelog, dropped-ticket list, third ticket in each group) remains available by opening the linked tickets or running a broader Jira search from the overflow note.
+Still enough for a reviewer to see: source and platform, the two closest open and closed tickets with status/fix quality, shared-cause risk, top gaps, and two actions. Causal wording uses Verified/Hypothesis labels per [QA-3553](https://smartsensebydigi.atlassian.net/browse/QA-3553) (see [causal-claims-example.md](causal-claims-example.md)). Additive TestRail / Bitbucket sections (at most two each) are shown in [testrail-bitbucket-example.md](testrail-bitbucket-example.md) per [QA-3554](https://smartsensebydigi.atlassian.net/browse/QA-3554). Detail that moved out of the comment (full PR changelog, dropped-ticket list, third ticket in each group) remains available by opening the linked tickets or running a broader Jira search from the overflow note.

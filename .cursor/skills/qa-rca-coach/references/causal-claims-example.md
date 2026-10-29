@@ -59,7 +59,7 @@ Overall Recurrence Risk: High — blank screen still reported on the build that 
 
 💡 RECOMMENDATIONS
 
-⭐ Priority 1: Add an iOS regression on 1.65.1 for cold open with a persisted session and SSO company-code login; fail if the screen stays blank.
+⭐ Priority 1: Add an iOS regression test on 1.65.1 for cold open with a persisted session and SSO company-code login; fail if the screen stays blank.
 ⭐ Priority 2: Finish a durable QA SSO login (AM-2478) so this path can be tested without a customer device.
 
 **Case A check:** Notes stay observational. Shared cause is Hypothesis with Needed evidence (no retrieved log proving same root). Temporary Fix names a remaining cause only as Hypothesis. No ✅ without Evidence.
@@ -105,7 +105,7 @@ Overall Recurrence Risk: Medium — Hypothesis (Medium): backfill after gateway 
 💡 RECOMMENDATIONS
 
 ⭐ Priority 1: On ENREQ-9218, pull gateway and sensor logs for 2026-10-09 16:31–17:46 (device 11666000000233489968) before naming a pipeline cause.
-⭐ Priority 2: Add a regression that power-cycles a gateway on firmware 1.96 and asserts historical readings backfill within the expected window.
+⭐ Priority 2: Add a regression test that power-cycles a gateway on firmware 1.96 and asserts historical readings backfill within the expected window.
 
 **Case B check:** No Verified pipeline/join/schema cause without retrieved logs. Closed tickets stay ❓ when Evidence is missing (not forced to ✅). Recurrence rationale that states a cause is tagged Hypothesis with Needed evidence.
 
