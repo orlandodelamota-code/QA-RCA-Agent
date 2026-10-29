@@ -7,10 +7,13 @@ Side-by-side check that Similar Ticket Investigation stays Jira-first while addi
 | Area | Before | After |
 |------|--------|-------|
 | Search sources | Jira + Confluence only | Jira + Confluence, plus TestRail and Bitbucket / code when available |
+| TestRail rows | Cases or whole runs | **Cases only** (`C#####`) — never publish a run (`R#####`) as the Related TestRail item |
 | Gap Analysis | Inferred coverage gaps from tickets alone | Prefer gaps grounded in retrieved C-ids or missing TestRail Case ID cells |
 | Coach starting point | Ticket summaries | Retrieved PR / file paths when linked (for example `App.js`, `ErrorBoundary.js`) |
+| Related Code / Affected component | No scope note | One-line disclaimer: based on available Jira, Bitbucket, and GitLab data only |
 | Missing tools | N/A | Keep section headers; one limitation line; continue — never block |
 | Affected component / recent changes | Not called out | Resolve service/repo (no RLM); recent single-story tickets/PRs on that component; **App version Mobile-only** |
+| Recommendations | Mixed / Claudish phrasing | Plain QA English (e.g. "Add a regression **test** that…", "Review the … API / UI for…") |
 
 ## Populated short comment (additive sections highlighted)
 
@@ -55,6 +58,8 @@ Keywords: blank white screen, SmartSense App, iOS, app 1.65.1, SSO
 
 🔧 RELATED CODE / BITBUCKET (2 found)
 
+Based on available Jira, Bitbucket, and GitLab data only; processes outside those systems are not included.
+
 [PR 1073](https://bitbucket.org/tempalert/smartsense-next/pull-requests/1073): AM-4524 Guard launch hydration and harden legacy SSO token handoff
 - Repo: tempalert/smartsense-next | Tied to: AM-4524 | Paths: App.js, app/components/ErrorBoundary.js, app/utils/StatePersist.js | Merge: MERGED ~2026-10-13 (Graph lastUpdatedAt)
 
@@ -62,6 +67,8 @@ Keywords: blank white screen, SmartSense App, iOS, app 1.65.1, SSO
 - Repo: tempalert/smartsense-next | Tied to: AM-4479 | Paths: not listed here | Merge: related single-story work on same component
 
 🧩 AFFECTED COMPONENT / RECENT CHANGES (2 found)
+
+Based on available Jira, Bitbucket, and GitLab data only; processes outside those systems are not included.
 
 - Component: tempalert/smartsense-next — resolved from mobile launch/SSO path on ENREQ-9220 / AM-4524
 - Recent change: [PR 1073](https://bitbucket.org/tempalert/smartsense-next/pull-requests/1073) / [AM-4524](https://smartsensebydigi.atlassian.net/browse/AM-4524) — MERGED ~2026-10-13 | single-story change on smartsense-next
@@ -80,10 +87,10 @@ Overall Recurrence Risk: High — blank screen still reported on the build that 
 
 💡 RECOMMENDATIONS
 
-⭐ Priority 1: Add or fill a TestRail case for corrupted AsyncStorage cold-open on iOS 1.65.1 (AM-4524 AC1 gap); fail if the screen stays blank.
-⭐ Priority 2: Start code review at [PR 1073](https://bitbucket.org/tempalert/smartsense-next/pull-requests/1073) (`App.js` hydration try/catch, `ErrorBoundary.js`) before expanding the 5 Whys.
+⭐ Priority 1: Add a regression test for corrupted AsyncStorage cold-open on iOS 1.65.1 (AM-4524 AC1 gap); fail if the screen stays blank.
+⭐ Priority 2: Review the launch hydration path in [PR 1073](https://bitbucket.org/tempalert/smartsense-next/pull-requests/1073) (`App.js` try/catch, `ErrorBoundary.js`) before expanding the 5 Whys.
 
-**Check:** TestRail and Bitbucket rows only cite retrieved links from AM-4524. Jira similar-ticket search is unchanged. Unavailable-tool runs would keep the two headers with a single limitation line instead of fabricated C-ids or PRs.
+**Check:** TestRail rows are cases (`C#####`), not runs. Bitbucket / component rows cite retrieved links from AM-4524 and include the data-source disclaimer. Jira similar-ticket search is unchanged. Unavailable-tool runs would keep the headers with a single limitation line instead of fabricated C-ids or PRs.
 
 ## During the 5 Whys (interactive)
 
@@ -113,13 +120,27 @@ TestRail not connected — continued with Jira/Confluence only
 
 🔧 RELATED CODE / BITBUCKET (unavailable)
 
+Based on available Jira, Bitbucket, and GitLab data only; processes outside those systems are not included.
+
 Bitbucket / code search unavailable — continued with linked PRs/commits only
 
 🧩 AFFECTED COMPONENT / RECENT CHANGES (unavailable)
 
+Based on available Jira, Bitbucket, and GitLab data only; processes outside those systems are not included.
+
 Component / recent-change search unavailable — continued with Jira/Confluence only
 
 (If no PR/commit URLs were on the tickets either, use: `Bitbucket / code search unavailable — continued with Jira/Confluence only` or `None found`.)
+
+## Run-only TestRail link (do not list the run)
+
+When Jira only links a run (for example `runs/view/58933` with dozens of tests), do **not** publish that run as a Related TestRail row:
+
+```
+🧪 RELATED TESTRAIL (none)
+
+None found (only run R58933 linked — Needed evidence: case ids that cover this path)
+```
 
 ## Web example shape (no App version)
 
@@ -130,6 +151,8 @@ Platform: Web | Focus: alarm creation — alarm not created | Component: tempale
 …
 
 🧩 AFFECTED COMPONENT / RECENT CHANGES (2 found)
+
+Based on available Jira, Bitbucket, and GitLab data only; processes outside those systems are not included.
 
 - Component: tempalert/ssbd-services — alarm/notification path
 - Recent change: [AM-XXXX](https://smartsensebydigi.atlassian.net/browse/AM-XXXX) — Done, single_story_release | MERGED PR on tempalert/ssbd-services ~date

@@ -103,7 +103,7 @@ These same attributes drive the additive TestRail and Bitbucket / code searches 
 
 | Source | Parameters derived from the ENREQ | What to look for |
 |--------|-----------------------------------|------------------|
-| **TestRail** | Feature area, error type, platform, 2–4 short keywords; also the ENREQ key and linked product-board keys as **refs** | Related cases (`C#####`), suites/sections, regression coverage, and runs (`R#####`) whose title or refs match |
+| **TestRail** | Feature area, error type, platform, 2–4 short keywords; also the ENREQ key and linked product-board keys as **refs** | Related **test cases** (`C#####`) whose title or refs match — not whole runs (`R#####`) |
 | **Bitbucket / Git** | Feature keywords, resolved service/component / repo (for example `tempalert/ssbd-services`), file or module names; linked ticket keys | Linked PRs, commits, changed files, and merge timestamps for that component |
 | **Affected component / recent changes** | Symptom → likely service (for example alarm creation → `ssbd-services` / `tempalert/ssbd-*`); Jira/Compass component names; Bitbucket workspace `tempalert` | Identify **what is affected**, then find **recent single-story tickets/PRs** that changed that component — Digi uses **single story release**, so do **not** rely on RLM release tickets |
 
@@ -143,9 +143,10 @@ ORDER BY updated DESC
 Use a few precise phrases from the ENREQ. If the query is too broad, narrow it silently — do **not** write what you dropped into Search Criteria or anywhere else in the comment. Never invent a ticket that was not in the JQL response.
 5. For each kept ticket, read status, summary, resolution, linked product/dev tickets, and relevant comments. For closed tickets, use Jira's development or remote links for the documented fix. Read a GitLab or Bitbucket URL only when the issue actually links one. If no commit or PR is linked, say so and classify fix quality as inconclusive when the comments are also thin.
 6. For process citations, use `searchConfluence` and `getConfluenceContent`. Cite the page URL. Prefer the current page over a stale one (check the version date).
-7. **Additive TestRail search** ([QA-3554](https://smartsensebydigi.atlassian.net/browse/QA-3554)) — after the Jira pass, look for related tests. Digi TestRail host: `https://smartsensetest.testrail.io`. Prefer tools already available in the run; never invent API keys or paste secrets.
-   - **From Jira first (always):** on the ENREQ and each kept similar ticket, scan description and comments for `smartsensetest.testrail.io` URLs, `[C#####]` case ids, `R#####` run ids, and any "TestRail runs (automation sync)" comment block. Those links are retrieved evidence — cite them.
-   - **When a TestRail MCP / Forge / API tool is connected:** search cases by title filter using 1–2 precise feature keywords (same terms as Search Criteria). Optionally search runs with `refs` = the ENREQ key and linked product-board keys (`include_plan_runs=1`; both active and completed). Cap at **2** cases (or runs) in the comment.
+7. **Additive TestRail search** ([QA-3554](https://smartsensebydigi.atlassian.net/browse/QA-3554)) — after the Jira pass, look for related **test cases**. Digi TestRail host: `https://smartsensetest.testrail.io`. Prefer tools already available in the session; never invent API keys or paste secrets.
+   - **List cases, not runs:** Related TestRail items must be `C#####` case links (title + one coverage note). Do **not** list a whole run (`R#####`) as the item — a run can contain dozens of tests and does not show which case covers the regression.
+   - **From Jira first (always):** on the ENREQ and each kept similar ticket, prefer `[C#####]` / `cases/view/` links and TestRail Case ID table cells. If only a run link (`runs/view/R#####` or "TestRail runs (automation sync)") is present, treat it as a pointer: resolve specific cases from that run when a TestRail tool allows, or write `None found (only run R##### linked — Needed evidence: case ids that cover this path)` and do not paste the run as a Related TestRail row.
+   - **When a TestRail MCP / Forge / API tool is connected:** search **cases** by title filter using 1–2 precise feature keywords (same terms as Search Criteria). Cap at **2** cases in the comment. Use run search only to discover case ids, never as the published list.
    - **When TestRail tools are missing or the call fails:** write one short line under Related TestRail — `TestRail not connected — continued with Jira/Confluence only` or `TestRail search failed — continued with Jira/Confluence only` — and continue. Do not block the investigation.
    - Never fabricate case ids, titles, or coverage. If nothing matched, write `None found`.
 8. **Additive Bitbucket / code search** ([QA-3554](https://smartsensebydigi.atlassian.net/browse/QA-3554)) — surface related code and release context.
@@ -197,9 +198,11 @@ Fix quality classification:
 - ❓ Inconclusive: insufficient evidence
 
 ### Related TestRail, Related Code / Bitbucket, and Affected component / recent changes
-Show these short blocks after Closed tickets and before Gap Analysis (template in [references/output-format.md](references/output-format.md)). At most **2** items each. Prefer hyperlinked case/PR/ticket ids with one match or change line. Fold strong hits into Gap Analysis and Recommendations (cite the C-id, PR, or component ticket). When a source is unavailable, keep the header and the single limitation line — do not omit the section.
+Show these short blocks after Closed tickets and before Gap Analysis (template in [references/output-format.md](references/output-format.md)). At most **2** items each. Prefer hyperlinked **case**/PR/ticket ids with one match or change line. Fold strong hits into Gap Analysis and Recommendations (cite the C-id, PR, or component ticket). When a source is unavailable, keep the header and the single limitation line — do not omit the section.
 
 On Related Code lines, include merge status and date when Graph or the PR page retrieved them (for example `Merged ~2026-10-13`). On Affected component / recent changes, name the component and up to two recent single-story tickets/PRs on that component — do not use RLM, and do not unmarked-claim that a change introduced the bug.
+
+Under both Related Code and Affected component / recent changes, include this one-line disclaimer (exact wording): `Based on available Jira, Bitbucket, and GitLab data only; processes outside those systems are not included.`
 
 ### Gap Analysis summary
 Up to 3 short test-coverage gaps; fix quality overview; overall recurrence risk with one short rationale:
@@ -211,7 +214,7 @@ Prefer grounding Test Coverage Gaps in retrieved TestRail cases (missing C-id fo
 
 If the recurrence rationale states a cause, label it Verified or Hypothesis. Observational recurrence ("blank screen reported again on 1.65.1") needs no label.
 
-Recommendations: at most two priority lines plus one optional extra. New test cases to write (with suggested scope), existing test cases to strengthen, process improvements. Keep each to one or two sentences. Do not embed unmarked root-cause assertions in recommendations.
+Recommendations: at most two priority lines plus one optional extra. New test cases to write (with suggested scope), existing test cases to strengthen, process improvements. Keep each to one or two sentences in plain QA English — say **Add a regression test that…**, not "Add a regression:"; say **Review the … API / UI for…**, not "Dig …". Do not embed unmarked root-cause assertions in recommendations.
 
 ### Output format
 Use the exact template in [references/output-format.md](references/output-format.md). It is the **only** permitted output for the investigation. No prose summaries, no "Context Summary" block, no narrative before or after. If a section has no findings, keep the header and write "None found". Self-check the output against the template before responding. Prefer brevity for first-glance Jira readability ([QA-3552](https://smartsensebydigi.atlassian.net/browse/QA-3552)). For a populated TestRail / Bitbucket example, see [references/testrail-bitbucket-example.md](references/testrail-bitbucket-example.md).

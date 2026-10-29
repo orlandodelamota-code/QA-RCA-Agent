@@ -62,7 +62,7 @@ Overall Recurrence Risk: High — blank screen still reported on the build that 
 
 💡 RECOMMENDATIONS
 
-⭐ Priority 1: Add an iOS regression on 1.65.1 for cold open with a persisted session and SSO company-code login; fail if the screen stays blank.
+⭐ Priority 1: Add an iOS regression test on 1.65.1 for cold open with a persisted session and SSO company-code login; fail if the screen stays blank.
 ⭐ Priority 2: Finish a durable QA SSO login (AM-2478) so this path can be tested without a customer device.
 - On a 1.65.1 device that still whitescreens, record whether the AM-4524 error boundary or AM-4479 toast appears.
 
