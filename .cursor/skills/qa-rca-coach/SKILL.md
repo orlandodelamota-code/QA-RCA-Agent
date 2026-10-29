@@ -1,13 +1,13 @@
 ---
 name: qa-rca-coach
 description: Coaches a QA team member through an ENREQ Mini Root Cause Analysis using the 5 Whys, and runs the Similar Ticket Investigation and Gap Analysis for bug-type ENREQs. Use whenever the user mentions an ENREQ key (ENREQ-1234), an RCA, Mini-RCA, 5 Whys, root cause, "similar tickets", "related incidents", "check history", CAPA, or when an automation sends a product-board ticket (AM, DASRV, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS) that just received the ENREQ label. Also use when the request arrives as a webhook payload containing a ticket key.
-last_updated: 2026-10-27
+last_updated: 2026-10-29
 created_by: odelamot@digi.com
 ---
 
 # QA RCA Coach
 
-Draft migrated from the Rovo agent "QA RCA Coach" (V4) and its sub-agent "ENREQ Similar Ticket Investigation & Gap Analysis" ([QA-3114](https://smartsensebydigi.atlassian.net/browse/QA-3114)). Comment length and ticket-field cuts follow [QA-3552](https://smartsensebydigi.atlassian.net/browse/QA-3552). Causal-claim citations and Verified vs Hypothesis labeling follow [QA-3553](https://smartsensebydigi.atlassian.net/browse/QA-3553). A responsible Digi employee must review it, and compare its output with the old agent, before it replaces the Rovo agent. Do not disable the Rovo agent from this skill.
+Draft migrated from the Rovo agent "QA RCA Coach" (V4) and its sub-agent "ENREQ Similar Ticket Investigation & Gap Analysis" ([QA-3114](https://smartsensebydigi.atlassian.net/browse/QA-3114)). Comment length and ticket-field cuts follow [QA-3552](https://smartsensebydigi.atlassian.net/browse/QA-3552). Causal-claim citations and Verified vs Hypothesis labeling follow [QA-3553](https://smartsensebydigi.atlassian.net/browse/QA-3553). Additive TestRail and Bitbucket / code search follow [QA-3554](https://smartsensebydigi.atlassian.net/browse/QA-3554). A responsible Digi employee must review it, and compare its output with the old agent, before it replaces the Rovo agent. Do not disable the Rovo agent from this skill.
 
 ## Choose a mode first
 
@@ -92,6 +92,15 @@ Run when: Automated mode, or in Interactive mode after the ticket is verified an
 ### Search attributes
 Extract from the **linked ENREQ ticket only**: bug description, affected feature area, error type, service/component, keywords, labels and fix versions if present. If fewer than 3 attributes can be extracted, ask the user to confirm feature area and error type before searching (Interactive mode only; in Automated mode proceed with what exists and say so in Search Criteria).
 
+These same attributes drive the additive TestRail and Bitbucket / code searches ([QA-3554](https://smartsensebydigi.atlassian.net/browse/QA-3554)):
+
+| Source | Parameters derived from the ENREQ | What to look for |
+|--------|-----------------------------------|------------------|
+| **TestRail** | Feature area, error type, platform, 2–4 short keywords; also the ENREQ key and linked product-board keys as **refs** | Related cases (`C#####`), suites/sections, regression coverage, and runs (`R#####`) whose title or refs match |
+| **Bitbucket / Git** | Feature keywords, service/component, file or module names mentioned on the ENREQ or similar tickets; linked ticket keys | Linked PRs, commits, changed files, and release context tied to the ENREQ or its similar tickets |
+
+Jira and Confluence remain the primary similar-ticket search. TestRail and Bitbucket are **additive** — they strengthen Gap Analysis and recommendations; they do not replace ticket search.
+
 ### Exclusions (remove silently, do not count in totals)
 - The ENREQ being investigated.
 - The triggering product-board ticket, when automated mode started from one.
@@ -126,6 +135,17 @@ ORDER BY updated DESC
 Use a few precise phrases from the ENREQ. If the query is too broad, narrow it silently — do **not** write what you dropped into Search Criteria or anywhere else in the comment. Never invent a ticket that was not in the JQL response.
 5. For each kept ticket, read status, summary, resolution, linked product/dev tickets, and relevant comments. For closed tickets, use Jira's development or remote links for the documented fix. Read a GitLab or Bitbucket URL only when the issue actually links one. If no commit or PR is linked, say so and classify fix quality as inconclusive when the comments are also thin.
 6. For process citations, use `searchConfluence` and `getConfluenceContent`. Cite the page URL. Prefer the current page over a stale one (check the version date).
+7. **Additive TestRail search** ([QA-3554](https://smartsensebydigi.atlassian.net/browse/QA-3554)) — after the Jira pass, look for related tests. Digi TestRail host: `https://smartsensetest.testrail.io`. Prefer tools already available in the run; never invent API keys or paste secrets.
+   - **From Jira first (always):** on the ENREQ and each kept similar ticket, scan description and comments for `smartsensetest.testrail.io` URLs, `[C#####]` case ids, `R#####` run ids, and any "TestRail runs (automation sync)" comment block. Those links are retrieved evidence — cite them.
+   - **When a TestRail MCP / Forge / API tool is connected:** search cases by title filter using 1–2 precise feature keywords (same terms as Search Criteria). Optionally search runs with `refs` = the ENREQ key and linked product-board keys (`include_plan_runs=1`; both active and completed). Cap at **2** cases (or runs) in the comment.
+   - **When TestRail tools are missing or the call fails:** write one short line under Related TestRail — `TestRail not connected — continued with Jira/Confluence only` or `TestRail search failed — continued with Jira/Confluence only` — and continue. Do not block the investigation.
+   - Never fabricate case ids, titles, or coverage. If nothing matched, write `None found`.
+8. **Additive Bitbucket / code search** ([QA-3554](https://smartsensebydigi.atlassian.net/browse/QA-3554)) — surface related code and release context.
+   - **From Jira first (always):** collect Bitbucket / GitLab PR and commit URLs from the ENREQ and kept tickets (description, comments, remote links). Prefer human-readable links such as `https://bitbucket.org/<workspace>/<repo>/pull-requests/<id>`.
+   - **Teamwork Graph (when available):** `getGraphContext` on the ENREQ and on closed similar tickets with `objectType: "JiraWorkItem"`, then follow `jira_work_item_links_external_pull_request` and `jira_work_item_links_external_commit`. Call `getGraphObject` on returned ARIs when you need title or URL. Cap at **2** PRs or commits in the comment.
+   - **Code search (when workspaces are accessible):** `executeRead` `searchCode` with a short natural-language or lexical query from the ENREQ feature/error keywords. If the response says no accessible workspaces, note `Bitbucket / code search unavailable — continued with linked PRs/commits only` (or Jira-only if none were linked) and continue.
+   - Use retrieved file paths from linked tickets (for example `App.js`, `StatePersist.js`) as starting points for coaches — cite the ticket or PR that named them. Do not invent paths.
+   - Never fabricate PRs, commits, or file paths. If nothing matched, write `None found`.
 
 ### Search Criteria (keep short)
 Exactly three lines:
@@ -153,26 +173,31 @@ Fix quality classification:
 - ⚠️ Temporary fix / workaround: symptoms addressed, root cause persists — if naming the remaining cause, label it Hypothesis with confidence / Needed evidence
 - ❓ Inconclusive: insufficient evidence
 
+### Related TestRail and Related Code / Bitbucket
+Show these two short blocks after Closed tickets and before Gap Analysis (template in [references/output-format.md](references/output-format.md)). At most **2** items each. Prefer hyperlinked case/PR ids with one match line and one coverage or path note. Fold strong hits into Gap Analysis and Recommendations (cite the C-id or PR). When a source is unavailable, keep the header and the single limitation line — do not omit the section.
+
 ### Gap Analysis summary
 Up to 3 short test-coverage gaps; fix quality overview; overall recurrence risk with one short rationale:
 - **High** = 3+ recurrences OR 2+ temporary fixes
 - **Medium** = 1-2 recurrences with gaps
 - **Low** = isolated with root cause fix confirmed (Verified with Evidence)
 
+Prefer grounding Test Coverage Gaps in retrieved TestRail cases (missing C-id for this path, case exists but not in regression, empty TestRail Case ID cell on a linked ticket) when those were found. Prefer grounding Recommendations in retrieved Bitbucket PRs or file paths when those were found. If TestRail/Bitbucket had no hits or were unavailable, keep Jira-only gaps — do not invent coverage or code claims.
+
 If the recurrence rationale states a cause, label it Verified or Hypothesis. Observational recurrence ("blank screen reported again on 1.65.1") needs no label.
 
 Recommendations: at most two priority lines plus one optional extra. New test cases to write (with suggested scope), existing test cases to strengthen, process improvements. Keep each to one or two sentences. Do not embed unmarked root-cause assertions in recommendations.
 
 ### Output format
-Use the exact template in [references/output-format.md](references/output-format.md). It is the **only** permitted output for the investigation. No prose summaries, no "Context Summary" block, no narrative before or after. If a section has no findings, keep the header and write "None found". Self-check the output against the template before responding. Prefer brevity for first-glance Jira readability ([QA-3552](https://smartsensebydigi.atlassian.net/browse/QA-3552)).
+Use the exact template in [references/output-format.md](references/output-format.md). It is the **only** permitted output for the investigation. No prose summaries, no "Context Summary" block, no narrative before or after. If a section has no findings, keep the header and write "None found". Self-check the output against the template before responding. Prefer brevity for first-glance Jira readability ([QA-3552](https://smartsensebydigi.atlassian.net/browse/QA-3552)). For a populated TestRail / Bitbucket example, see [references/testrail-bitbucket-example.md](references/testrail-bitbucket-example.md).
 
 ### Investigation guardrails
-- Only surface data actually retrieved from Jira. Never fabricate ticket data.
+- Only surface data actually retrieved from Jira, Confluence, TestRail, or Bitbucket / code tools. Never fabricate ticket, TestRail, or Bitbucket data.
 - Distinguish Verified findings (with evidence links) from Hypotheses (with confidence / Needed evidence). No unmarked causal or root-cause claims in Notes, Fix lines, shared-cause flags, gap rationales, or recommendations ([QA-3553](https://smartsensebydigi.atlassian.net/browse/QA-3553)).
 - Base fix-quality calls on documented evidence, not guesses. ✅ Root cause requires a retrieved Evidence link; otherwise use ❓ Inconclusive.
 - On analytics / data-pipeline ENREQs, do not infer join, schema, or pipeline causes as Verified unless you retrieved logs, comments, or Confluence that state them — default those to Hypothesis.
 - Stay blameless; focus on process and system gaps.
-- If the search fails, give a short notice and continue; never block the session.
+- If Jira, TestRail, or Bitbucket search fails or a tool is unavailable, give a short notice in that section and continue; never block the session ([QA-3554](https://smartsensebydigi.atlassian.net/browse/QA-3554)).
 - If nothing similar is found, say so and suggest a manual check with broader keywords.
 
 ## Automated mode specifics
@@ -218,8 +243,10 @@ Needed capabilities, all through that integration:
 - Read issues and links (including clone links and issue type): `getJiraIssue` with `view: "evidence"`
 - JQL search across ENREQ, AM, DASRV, LW, SSV, DOPS, DEVOPS, TOOLS, VOY, LSS: `searchJiraIssuesUsingJql`
 - Read comments: `executeRead` with `name: "listJiraIssueComments"` (`cloudId` is a top-level argument, not inside `inputs`). `getJiraIssue` does not return comment bodies.
-- Read linked commits/PRs from the issue's development or remote links
+- Read linked commits/PRs from the issue's development or remote links, and from Teamwork Graph (`getGraphContext` / `getGraphObject` for `ExternalPullRequest` and `ExternalCommit`) when available
+- Optional code search across connected Bitbucket workspaces: `executeRead` `name: "searchCode"` (continue without it when workspaces are inaccessible)
 - Read Confluence pages: `searchConfluence`, `getConfluenceContent`
+- Optional TestRail: any connected TestRail MCP / Forge tool, or TestRail URLs and C/R ids already on Jira tickets. Host: `https://smartsensetest.testrail.io`. Do not create or store a TestRail API token in this skill.
 - Add or edit the coach comment (Automated mode only, after the production-posting confirmation): `addOrEditJiraIssueComment`, passing the existing comment id when editing
 
 ## Cutover

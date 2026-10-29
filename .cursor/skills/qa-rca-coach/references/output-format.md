@@ -4,7 +4,7 @@ Use this template exactly. Replace bracketed items. Keep every section header; w
 
 Keep the comment short enough for a first-glance Jira read. Prefer one short line per field. Do not paste long comment quotes, PR changelogs, or query-narrowing narratives into Search Criteria or ticket notes.
 
-**Hard reject before posting:** if the draft still has any of `Feature Area:`, `Error Type:` (separate line), `Excluded from results:`, `Key Context:`, `Linked Dev Ticket:`, `Fix Description:`, per-ticket `Test Coverage Gaps:` bullets, per-ticket `Recurrence Risk:`, more than **2** tickets under Open or under Closed, a "Query narrowed" / "Dropped as" paragraph, an unlabeled `Shared root cause still open` line, a `Quality: ✅` without `| Evidence:`, or any causal / root-cause sentence that is not tagged **Verified** or **Hypothesis** — rewrite to this template. Do not post the long or uncited draft.
+**Hard reject before posting:** if the draft still has any of `Feature Area:`, `Error Type:` (separate line), `Excluded from results:`, `Key Context:`, `Linked Dev Ticket:`, `Fix Description:`, per-ticket `Test Coverage Gaps:` bullets, per-ticket `Recurrence Risk:`, more than **2** tickets under Open or under Closed, more than **2** Related TestRail items, more than **2** Related Code / Bitbucket items, a "Query narrowed" / "Dropped as" paragraph, an unlabeled `Shared root cause still open` line, a `Quality: ✅` without `| Evidence:`, any causal / root-cause sentence that is not tagged **Verified** or **Hypothesis**, or any TestRail case / Bitbucket PR / file path that was not retrieved — rewrite to this template. Do not post the long or uncited draft.
 
 ### Causal claims (QA-3553)
 
@@ -42,9 +42,23 @@ Keywords: [3–6 short terms from the ENREQ]
 
 (Add "X additional tickets found ..." note under each group when results were truncated. Show at most **2** tickets per group.)
 
+🧪 RELATED TESTRAIL (X found | unavailable | none)
+
+[C#####](https://smartsensetest.testrail.io/index.php?/cases/view/#####): [case title or short label]
+- Match: [keyword / refs KEY] | Coverage: [one short note — covers path / gap / regression candidate]
+
+(Or a single line: `None found` / `TestRail not connected — continued with Jira/Confluence only` / `TestRail search failed — continued with Jira/Confluence only`. Show at most **2** cases. Prefer links retrieved from the ENREQ or similar tickets; never invent C-ids.)
+
+🔧 RELATED CODE / BITBUCKET (X found | unavailable | none)
+
+[PR or commit link]: [one-line title]
+- Repo: [workspace/repo] | Tied to: [ticket key] | Paths: [up to 3 retrieved file paths, or "not listed"]
+
+(Or a single line: `None found` / `Bitbucket / code search unavailable — continued with linked PRs/commits only` / `Bitbucket / code search unavailable — continued with Jira/Confluence only`. Show at most **2** PRs or commits. Never invent paths or PR numbers.)
+
 📊 GAP ANALYSIS SUMMARY
 
-Test Coverage Gaps: [up to 3 short numbered items]
+Test Coverage Gaps: [up to 3 short numbered items; cite TestRail C-ids when retrieved]
 Fix Quality Overview: X root cause, Y temporary, Z inconclusive
 Overall Recurrence Risk: [High / Medium / Low] — [one short rationale; tag Verified/Hypothesis only if the rationale states a cause]
 
@@ -54,7 +68,7 @@ Overall Recurrence Risk: [High / Medium / Low] — [one short rationale; tag Ver
 ⭐ Priority 2: [second priority recommendation]
 - [One additional recommendation, if needed]
 
-(Recommendations cover: new test cases to write with suggested scope; existing test cases to strengthen or extend; process improvements such as checklist items, review gates, monitoring or alerting. Keep each recommendation to one or two sentences. Do not embed unmarked root-cause assertions.)
+(Recommendations cover: new test cases to write with suggested scope; existing test cases to strengthen or extend; process improvements such as checklist items, review gates, monitoring or alerting. When Bitbucket PRs or file paths were retrieved, point coaches at those starting points. Keep each recommendation to one or two sentences. Do not embed unmarked root-cause assertions.)
 
 ---
 
