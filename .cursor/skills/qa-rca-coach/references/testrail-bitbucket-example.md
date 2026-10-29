@@ -10,7 +10,7 @@ Side-by-side check that Similar Ticket Investigation stays Jira-first while addi
 | Gap Analysis | Inferred coverage gaps from tickets alone | Prefer gaps grounded in retrieved C-ids or missing TestRail Case ID cells |
 | Coach starting point | Ticket summaries | Retrieved PR / file paths when linked (for example `App.js`, `ErrorBoundary.js`) |
 | Missing tools | N/A | Keep section headers; one limitation line; continue — never block |
-| Recent release / merge | Not called out | Timeline from RLM/fixVersions + MERGED PR timestamps; Compass/component when linked; cause claims stay Hypothesis unless cited |
+| Affected component / recent changes | Not called out | Resolve service/repo (no RLM); recent single-story tickets/PRs on that component; **App version Mobile-only** |
 
 ## Populated short comment (additive sections highlighted)
 
@@ -19,7 +19,7 @@ Side-by-side check that Similar Ticket Investigation stays Jira-first while addi
 🔍 SEARCH CRITERIA
 
 Source ENREQ: [ENREQ-9220](https://smartsensebydigi.atlassian.net/browse/ENREQ-9220)
-Platform: Mobile | Focus: SmartSense app launch — blank white screen on open
+Platform: Mobile | Focus: SmartSense app launch — blank white screen on open | Component: tempalert/smartsense-next | App: 1.65.1
 Keywords: blank white screen, SmartSense App, iOS, app 1.65.1, SSO
 
 📂 SIMILAR OPEN TICKETS (2 found)
@@ -58,14 +58,15 @@ Keywords: blank white screen, SmartSense App, iOS, app 1.65.1, SSO
 [PR 1073](https://bitbucket.org/tempalert/smartsense-next/pull-requests/1073): AM-4524 Guard launch hydration and harden legacy SSO token handoff
 - Repo: tempalert/smartsense-next | Tied to: AM-4524 | Paths: App.js, app/components/ErrorBoundary.js, app/utils/StatePersist.js | Merge: MERGED ~2026-10-13 (Graph lastUpdatedAt)
 
-[AM-4524 commits via Graph](https://smartsensebydigi.atlassian.net/browse/AM-4524): linked ExternalCommit set (e.g. 00de285)
-- Repo: smartsense-next | Tied to: AM-4524 | Paths: not listed on commit objects | Merge: commits linked on the closed bug
+[AM-4479](https://smartsensebydigi.atlassian.net/browse/AM-4479): Add customer-friendly toast for SSO blank white screen
+- Repo: tempalert/smartsense-next | Tied to: AM-4479 | Paths: not listed here | Merge: related single-story work on same component
 
-⏱ RECENT RELEASE / MERGE TIMING (2 found)
+🧩 AFFECTED COMPONENT / RECENT CHANGES (2 found)
 
-- Release: [RLM-915](https://smartsensebydigi.atlassian.net/browse/RLM-915) — Deployed (SSM App v1.65.1); Fix version SSM App v1.65.1 on AM-4524 | Reported on: app 1.65.1 / related ENREQ blank-screen reports
-- Merge window: [PR 1073](https://bitbucket.org/tempalert/smartsense-next/pull-requests/1073) — MERGED ~2026-10-13, aligned with RLM-915 window
-- Hypothesis (Medium) — Needed evidence: customer repro confirming whitescreen still occurs on 1.65.1 *after* PR 1073 (mitigation) vs whether an earlier 1.64.x/1.65.0 change introduced the corrupt-session path
+- Component: tempalert/smartsense-next — resolved from mobile launch/SSO path on ENREQ-9220 / AM-4524
+- Recent change: [PR 1073](https://bitbucket.org/tempalert/smartsense-next/pull-requests/1073) / [AM-4524](https://smartsensebydigi.atlassian.net/browse/AM-4524) — MERGED ~2026-10-13 | single-story change on smartsense-next
+- App 1.65.1 reported on ENREQ (Mobile only — not an RLM lookup)
+- Hypothesis (Medium) — Needed evidence: customer repro confirming whitescreen still occurs on 1.65.1 *after* PR 1073 (mitigation) vs whether an earlier smartsense-next change introduced the corrupt-session path
 
 📊 GAP ANALYSIS SUMMARY
 
@@ -114,8 +115,22 @@ TestRail not connected — continued with Jira/Confluence only
 
 Bitbucket / code search unavailable — continued with linked PRs/commits only
 
-⏱ RECENT RELEASE / MERGE TIMING (unavailable)
+🧩 AFFECTED COMPONENT / RECENT CHANGES (unavailable)
 
-Release / merge timing unavailable — continued with Jira/Confluence only
+Component / recent-change search unavailable — continued with Jira/Confluence only
 
 (If no PR/commit URLs were on the tickets either, use: `Bitbucket / code search unavailable — continued with Jira/Confluence only` or `None found`.)
+
+## Web example shape (no App version)
+
+For a web alarm-creation ENREQ, Search Criteria omits App, and the component block targets services — not RLM or versions:
+
+```
+Platform: Web | Focus: alarm creation — alarm not created | Component: tempalert/ssbd-services
+…
+
+🧩 AFFECTED COMPONENT / RECENT CHANGES (2 found)
+
+- Component: tempalert/ssbd-services — alarm/notification path
+- Recent change: [AM-XXXX](https://smartsensebydigi.atlassian.net/browse/AM-XXXX) — Done, single_story_release | MERGED PR on tempalert/ssbd-services ~date
+```
