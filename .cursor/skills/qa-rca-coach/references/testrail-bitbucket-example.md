@@ -77,6 +77,26 @@ Overall Recurrence Risk: High — blank screen still reported on the build that 
 
 **Check:** TestRail and Bitbucket rows only cite retrieved links from AM-4524. Jira similar-ticket search is unchanged. Unavailable-tool runs would keep the two headers with a single limitation line instead of fabricated C-ids or PRs.
 
+## During the 5 Whys (interactive)
+
+Same AM-4524 evidence can deepen a Why without re-running the full investigation. Example turn after Why #2 ("hydration fails on a corrupt AsyncStorage snapshot"):
+
+```
+Why #2: Hydration fails on a corrupt AsyncStorage snapshot and never reaches login.
+- Tag: Hypothesis (Medium)
+- Needed evidence (before dig): TestRail case or unit test that asserts corrupt-session cold open; code path that catches loadAppState failure
+
+Evidence pulled this turn:
+- TestRail: C65333, C3227152 — SSO login / expiry only; AC1 corrupt-snapshot cell on AM-4524 still empty
+- Bitbucket: PR 1073 — App.js try/catch around loadAppState; ErrorBoundary.js; StatePersist.js
+
+Why #2 (updated): Hydration fails on a corrupt AsyncStorage snapshot and never reaches login.
+- Tag: Verified — Evidence: PR 1073 (App.js hydration guard) + AM-4524 AC1 with empty TestRail Case ID
+- Next Why suggestion: Why was AC1 left without a TestRail case while SSO paths were linked?
+```
+
+Root-cause table later cites those same links in the evidence column. CAPA can name "add C-id for AC1" and "regression around App.js hydration" without inventing coverage.
+
 ## Unavailable-source shape (still valid)
 
 🧪 RELATED TESTRAIL (unavailable)
