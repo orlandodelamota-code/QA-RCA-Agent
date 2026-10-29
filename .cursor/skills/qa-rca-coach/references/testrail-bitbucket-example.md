@@ -10,6 +10,7 @@ Side-by-side check that Similar Ticket Investigation stays Jira-first while addi
 | Gap Analysis | Inferred coverage gaps from tickets alone | Prefer gaps grounded in retrieved C-ids or missing TestRail Case ID cells |
 | Coach starting point | Ticket summaries | Retrieved PR / file paths when linked (for example `App.js`, `ErrorBoundary.js`) |
 | Missing tools | N/A | Keep section headers; one limitation line; continue — never block |
+| Recent release / merge | Not called out | Timeline from RLM/fixVersions + MERGED PR timestamps; Compass/component when linked; cause claims stay Hypothesis unless cited |
 
 ## Populated short comment (additive sections highlighted)
 
@@ -55,10 +56,16 @@ Keywords: blank white screen, SmartSense App, iOS, app 1.65.1, SSO
 🔧 RELATED CODE / BITBUCKET (2 found)
 
 [PR 1073](https://bitbucket.org/tempalert/smartsense-next/pull-requests/1073): AM-4524 Guard launch hydration and harden legacy SSO token handoff
-- Repo: tempalert/smartsense-next | Tied to: AM-4524 | Paths: App.js, app/components/ErrorBoundary.js, app/utils/StatePersist.js
+- Repo: tempalert/smartsense-next | Tied to: AM-4524 | Paths: App.js, app/components/ErrorBoundary.js, app/utils/StatePersist.js | Merge: MERGED ~2026-10-13 (Graph lastUpdatedAt)
 
-[RLM-915](https://smartsensebydigi.atlassian.net/browse/RLM-915): Release - SSM App v1.65.1
-- Repo: release ticket (Deployed) | Tied to: AM-4524 | Paths: not listed on the release ticket
+[AM-4524 commits via Graph](https://smartsensebydigi.atlassian.net/browse/AM-4524): linked ExternalCommit set (e.g. 00de285)
+- Repo: smartsense-next | Tied to: AM-4524 | Paths: not listed on commit objects | Merge: commits linked on the closed bug
+
+⏱ RECENT RELEASE / MERGE TIMING (2 found)
+
+- Release: [RLM-915](https://smartsensebydigi.atlassian.net/browse/RLM-915) — Deployed (SSM App v1.65.1); Fix version SSM App v1.65.1 on AM-4524 | Reported on: app 1.65.1 / related ENREQ blank-screen reports
+- Merge window: [PR 1073](https://bitbucket.org/tempalert/smartsense-next/pull-requests/1073) — MERGED ~2026-10-13, aligned with RLM-915 window
+- Hypothesis (Medium) — Needed evidence: customer repro confirming whitescreen still occurs on 1.65.1 *after* PR 1073 (mitigation) vs whether an earlier 1.64.x/1.65.0 change introduced the corrupt-session path
 
 📊 GAP ANALYSIS SUMMARY
 
@@ -106,5 +113,9 @@ TestRail not connected — continued with Jira/Confluence only
 🔧 RELATED CODE / BITBUCKET (unavailable)
 
 Bitbucket / code search unavailable — continued with linked PRs/commits only
+
+⏱ RECENT RELEASE / MERGE TIMING (unavailable)
+
+Release / merge timing unavailable — continued with Jira/Confluence only
 
 (If no PR/commit URLs were on the tickets either, use: `Bitbucket / code search unavailable — continued with Jira/Confluence only` or `None found`.)
